@@ -8,6 +8,10 @@
 - Steam
 - GE-Proton 11-1 
 
+### Tested Environment
+
+- i7 12700H + Iris Xe + RTX4050 laptop
+
 ### Required Drivers
 
 #### Intel GPU
