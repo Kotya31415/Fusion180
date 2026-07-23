@@ -1,6 +1,18 @@
 
 # Unofficial installer and launcher for Autodesk Fusion 360 on Arch Linux/CachyOS using GE-Proton.
 
+## Before You Start
+
+This project does **not** include Autodesk Fusion Installer.
+
+Due to Autodesk's license, you must download the latest Fusion installer yourself from Autodesk's official website.
+
+Place the installer in your `~/Downloads` directory (or specify its path when running the installer script).
+
+Example:
+
+~/Downloads/Fusion Client Downloader.exe
+
 ## Prerequisites
 
 ### Supported Environment
