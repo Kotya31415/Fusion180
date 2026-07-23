@@ -6,9 +6,8 @@
 	| |  | |_| \__ \| | (_) | | | | | ||  (_)  || |_| |
 	|_|   \__,_|__ /|_|\___/|_| |_| |_| \_ ___/ \_____/
 
-						 Fusion 360 Linux Installer
+						 Turn Fusion 180° toward Linux.
 
-								 GE-Proton Edition
 
 ## Before You Start
 
