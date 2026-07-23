@@ -1,5 +1,16 @@
 
-# Unofficial installer and launcher for Autodesk Fusion 360 on Arch Linux/CachyOS using GE-Proton.
+# |
+ 
+    _______          _              __   ____    _____
+	|  ____|        (_)            /_ | /  _  \ /  _  \
+	| |__ _   _ ___  _  ___  _ __   | | \ (_) / | | | |
+	|  __| | | / __|| |/ _ \| '_ \  | | /  _  \ | | | |
+	| |  | |_| \__ \| | (_) | | | | | ||  (_)  || |_| |
+	|_|   \__,_|__ /|_|\___/|_| |_| |_| \_ ___/ \_____/
+
+						 Fusion 360 Linux Installer
+
+								 GE-Proton Edition
 
 ## Before You Start
 
