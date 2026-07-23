@@ -32,6 +32,7 @@
 
 - steam
 - protonup-qt
+- Fusion Installer from Autodesk
 
 ### Important Notes
 A login screen may appear during the installation of Fusion; please do not log in at this time.
