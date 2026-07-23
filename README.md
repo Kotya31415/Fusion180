@@ -32,8 +32,6 @@
 
 - steam
 - protonup-qt
-- xdg-utils
-- desktop-file-utils
 
 ### Important Notes
 A login screen may appear during the installation of Fusion; please do not log in at this time.
