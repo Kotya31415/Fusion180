@@ -66,13 +66,27 @@ echo -e "${RESET}"
 # =========================
 
 
-PREFIX="$HOME/.fusion360-proton2"
+PREFIX="$HOME/.fusion180"
 
 STEAM="$HOME/.local/share/Steam"
 
-PROTON="$STEAM/compatibilitytools.d/GE-Proton11-1/proton"
+PROTON=$(find "$STEAM/compatibilitytools.d" \
+    -maxdepth 1 \
+    -type d \
+    -name "GE-Proton*" \
+    | sort -V \
+    | tail -n1)
 
-INSTALLER="$HOME/Downloads/Fusion Client Downloader.exe"
+[ -n "$PROTON" ] || fail "GE-Proton not found"
+
+PROTON="$PROTON/proton"
+
+INSTALLER=$(find "$HOME/Downloads" \
+    -maxdepth 1 \
+    -iname "*Fusion*.exe" \
+    | head -n1)
+
+[ -n "$INSTALLER" ] || fail "Fusion installer not found"
 
 APPDIR="$HOME/.local/share/applications"
 
@@ -95,9 +109,9 @@ fi
 
 
 if [ -f "$PROTON" ]; then
-    ok "GE-Proton11-1 detected"
+    ok "GE-Proton detected"
 else
-    fail "GE-Proton11-1 not found"
+    fail "GE-Proton not found"
 fi
 
 
@@ -105,7 +119,7 @@ fi
 if [ -f "$INSTALLER" ]; then
     ok "Fusion Installer detected"
 else
-    fail "FusionInstaller.exe missing"
+    fail "Fusion installer missing"
 fi
 
 
@@ -180,10 +194,17 @@ mkdir -p "$APPDIR"
 cat > "$APPDIR/adskidmgr-handler.sh" <<'EOF'
 #!/bin/bash
 
-PREFIX="$HOME/.fusion360-proton2"
+PREFIX="$HOME/.fusion180"
 STEAM="$HOME/.local/share/Steam"
 
-PROTON="$STEAM/compatibilitytools.d/GE-Proton11-1/proton"
+PROTON=$(find "$STEAM/compatibilitytools.d" \
+    -maxdepth 1 \
+    -type d \
+    -name "GE-Proton*" \
+    | sort -V \
+    | tail -n1)
+
+PROTON="$PROTON/proton"
 
 
 IDM=$(find "$PREFIX" \

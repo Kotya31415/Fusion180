@@ -1,9 +1,16 @@
 #!/bin/bash
 
-PREFIX="$HOME/.fusion360-proton2"
+PREFIX="$HOME/.fusion180"
 STEAM="$HOME/.local/share/Steam"
 
-PROTON="$STEAM/compatibilitytools.d/GE-Proton11-1/proton"
+PROTON=$(find "$STEAM/compatibilitytools.d" \
+    -maxdepth 1 \
+    -type d \
+    -name "GE-Proton*" \
+    | sort -V \
+    | tail -n1)
+
+PROTON="$PROTON/proton"
 
 
 export PROTON_USE_WINED3D=0
