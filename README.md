@@ -55,9 +55,9 @@ Example:
 - Fusion Installer from Autodesk
 
 ### Important Notes
-A login screen may appear during the installation of Fusion; please do not log in at this time.
-After logging into Fusion via your browser, you may see a login error message on the Fusion interface, but this is normal. Click the “OK” button to continue, and you should be able to log in.
-After clicking the “New Design” button, the entire screen will turn gray and you will be unable to use the mouse, but you can navigate using the arrow keys and the Enter key. You can also exit by pressing the Esc key.
+- A login screen may appear during the installation of Fusion; please do not log in at this time.
+- After logging into Fusion via your browser, you may see a login error message on the Fusion interface, but this is normal.    Click the “OK” button to continue, and you should be able to log in.
+- After clicking the “New Design” button, the entire screen will turn gray and you will be unable to use the mouse, but you can navigate using the arrow keys and the Enter key. You can also exit by pressing the Esc key.
 
 > **Disclaimer**
 >
