@@ -25,10 +25,10 @@ Example:
 
 ### Supported Environment
 
-- Arch Linux / CachyOS
+- Arch , CachyOS , Fedora , Debian
 - KDE Plasma 6
 - Wayland
-- Steam
+- Steam(Not Flappak)
 - GE-Proton 11-1 
 
 ### Tested Environment
