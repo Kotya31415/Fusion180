@@ -23,12 +23,12 @@ Example:
 
 ## Prerequisites
 
-### Supported Environment
+### Tested Environment
 
 - Arch , CachyOS , Fedora , Debian
 - KDE Plasma 6
 - Wayland
-- Steam(Not Flatpak)
+- Steam(Native Version) ← Flatpak is currently not supported
 - GE-Proton 11-1 
 
 ### Tested Environment
