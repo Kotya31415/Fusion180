@@ -50,7 +50,7 @@ Example:
 
 ### Required Packages
 
-- steam
+- Steam(Native Version) ← Flatpak is currently not supported
 - protonup-qt
 - Fusion Installer from Autodesk
 
