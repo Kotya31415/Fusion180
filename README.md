@@ -28,7 +28,7 @@ Example:
 - Arch , CachyOS , Fedora , Debian
 - KDE Plasma 6
 - Wayland
-- Steam(Not Flappak)
+- Steam(Not Flatpak)
 - GE-Proton 11-1 
 
 ### Tested Environment
