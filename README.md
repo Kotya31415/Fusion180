@@ -97,8 +97,9 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 ```bash
 ~/launch-fusion.sh
 ```
-**6. Set Graphics Driver
-!["photo"]("Screenshot_20260808_220834.png")
+**6. Set Graphics Driver**
+
+![photo]("Screenshot.png")
 ---
 
 ## Known Issues
