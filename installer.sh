@@ -79,6 +79,7 @@ PROTON=$(find "$STEAM/compatibilitytools.d" \
 
 [ -n "$PROTON" ] || fail "GE-Proton not found"
 
+PROTON_VERSION=$(basename "$PROTON")
 PROTON="$PROTON/proton"
 
 INSTALLER=$(find "$HOME/Downloads" \
@@ -110,6 +111,7 @@ fi
 
 if [ -f "$PROTON" ]; then
     ok "GE-Proton detected"
+    info "GE-Proton version: $PROTON_VERSION"
 else
     fail "GE-Proton not found"
 fi
