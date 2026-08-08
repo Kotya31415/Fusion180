@@ -114,7 +114,7 @@ rm -rf ~/.fusion180
 
 This removes the directory at `~/.fusion180`.
 
----
+
 
 ## Known Issues
 
