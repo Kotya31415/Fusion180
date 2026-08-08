@@ -99,7 +99,7 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 ```
 **6. Set Graphics Driver**
 
-![photo]("Screenshot.png")
+![photo]("https://github.com/Kotya31415/Fusion180/blob/9ae9be5ad8133990c5c3eb8715fa7ad20738ffee/Screenshot.png")
 ---
 
 ## Known Issues
