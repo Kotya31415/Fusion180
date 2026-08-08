@@ -104,6 +104,18 @@ Set graphics driver to DirectX 11.
 
 ---
 
+## Uninstallation
+
+To remove the Fusion180 prefix created by the installer:
+
+```bash
+rm -rf ~/.fusion180
+```
+
+This removes the directory at `~/.fusion180`.
+
+---
+
 ## Known Issues
 
 | # | Symptom | Status / Workaround |
