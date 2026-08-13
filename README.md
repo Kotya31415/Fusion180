@@ -67,7 +67,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 **1. Install GE-Proton 11-1 and Steam**
 
-Open `protonup-qt` and install GE-Proton 11-1 (or newer). This is a GUI step, no command needed.
+Open `protonup-qt` and install GE-Proton 11-1. This is a GUI step, no command needed.
 Open Steam and login.
 
 **2. Get the Fusion180 scripts**
