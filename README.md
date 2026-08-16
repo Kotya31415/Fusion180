@@ -18,6 +18,7 @@ Fusion180 is an unofficial, community-driven guide and script set for running **
 This project does **not** include the Autodesk Fusion installer.
 
 Due to Autodesk's license terms, you must download the latest installer yourself from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview).
+If you are unable to download the file, we recommend downloading it on Windows first and then transferring it to Linux using a USB flash drive or similar device.
 
 Place the installer in your `~/Downloads` directory (or point the installer script at its path).
 
