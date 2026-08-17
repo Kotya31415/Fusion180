@@ -124,7 +124,6 @@ This removes the directory at `~/.fusion180`.
 |---|----------|----------------------|
 | 1 | A login screen appears during Fusion installation. | This is expected — **do not log in here.** Continue the install normally. |
 | 2 | After signing in through the browser, Fusion shows a login error on its interface. | This is normal. Click **OK** to continue; you should be signed in correctly afterward. |
-| 3 | Clicking **New Design** turns the whole screen gray. Mouse input stops working, but keyboard navigation (arrow keys, Enter) and **Esc** to exit still work. | Don't use the mouse here — navigate the dialog with the arrow keys, confirm with Enter, and press Esc if you need to back out.  |
 
 
 If you run into something not listed here, please open an issue with your distro, kernel version, and full console output.
