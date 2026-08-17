@@ -136,30 +136,38 @@ mkdir -p "$PREFIX"
 
 ok "Prefix created"
 
-
 # =========================
-# Configure Wine virtual desktop
+# Winecfg Setting
 # =========================
 
-info "Configuring Wine virtual desktop"
-#
-# Override the size with FUSION_VIRTUAL_DESKTOP_SIZE if desired, e.g.
-# FUSION_VIRTUAL_DESKTOP_SIZE=1920x1080 ./installer.sh
-VIRTUAL_DESKTOP_SIZE="${FUSION_VIRTUAL_DESKTOP_SIZE:-1920x1080}"
+info "Configuring Winecfg settings"
 
-# Initialize the Proton prefix and set Wine's virtual-desktop registry values.
+# Allow the window manager to decorate windows
 env \
 STEAM_COMPAT_DATA_PATH="$PREFIX" \
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
-"$PROTON" run reg.exe ADD "HKCU\Software\Wine\Explorer" /v Desktop /t REG_SZ /d "Default" /f >/dev/null
+"$PROTON" run reg.exe ADD \
+"HKCU\Software\Wine\X11 Driver" \
+/v Decorated /t REG_SZ /d Y /f >/dev/null
 
+# Do NOT allow the window manager to control the windows
 env \
 STEAM_COMPAT_DATA_PATH="$PREFIX" \
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
-"$PROTON" run reg.exe ADD "HKCU\Software\Wine\Explorer\Desktops" /v Default /t REG_SZ /d "$VIRTUAL_DESKTOP_SIZE" /f >/dev/null
+"$PROTON" run reg.exe ADD \
+"HKCU\Software\Wine\X11 Driver" \
+/v Managed /t REG_SZ /d N /f >/dev/null
 
-ok "Virtual desktop enabled ($VIRTUAL_DESKTOP_SIZE)"
+# 120 DPI
+env \
+STEAM_COMPAT_DATA_PATH="$PREFIX" \
+STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
+"$PROTON" run reg.exe ADD \
+"HKCU\Control Panel\Desktop" \
+/v LogPixels /t REG_DWORD /d 120 /f >/dev/null
 
+ok "Winecfg settings configured"
+ok "DPI set to 120"
 
 # =========================
 # Install Fusion360
