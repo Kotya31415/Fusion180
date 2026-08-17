@@ -39,7 +39,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1                      |
+| Compatibility tool | GE-Proton 11-1 , 11-5                     |
 
 ### Hardware Tested On
 
