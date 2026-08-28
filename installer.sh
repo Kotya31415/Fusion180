@@ -142,22 +142,6 @@ ok "Prefix created"
 
 info "Configuring Winecfg settings"
 
-# Allow the window manager to decorate windows
-env \
-STEAM_COMPAT_DATA_PATH="$PREFIX" \
-STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
-"$PROTON" run reg.exe ADD \
-"HKCU\Software\Wine\X11 Driver" \
-/v Decorated /t REG_SZ /d Y /f >/dev/null
-
-# Do NOT allow the window manager to control the windows
-env \
-STEAM_COMPAT_DATA_PATH="$PREFIX" \
-STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
-"$PROTON" run reg.exe ADD \
-"HKCU\Software\Wine\X11 Driver" \
-/v Managed /t REG_SZ /d N /f >/dev/null
-
 # 120 DPI
 env \
 STEAM_COMPAT_DATA_PATH="$PREFIX" \
@@ -168,6 +152,7 @@ STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
 
 ok "Winecfg settings configured"
 ok "DPI set to 120"
+
 
 # =========================
 # Install Fusion360
