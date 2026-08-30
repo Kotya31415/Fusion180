@@ -1,5 +1,5 @@
 #!/bin/bash
-
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PREFIX="$HOME/.fusion180"
 STEAM="$HOME/.local/share/Steam"
 
@@ -12,6 +12,10 @@ PROTON=$(find "$STEAM/compatibilitytools.d" \
 
 PROTON="$PROTON/proton"
 
+"$SCRIPT_DIR/fusion-window-fix.fish" &
+FIX_PID=$!
+
+trap 'kill "$FIX_PID" 2>/dev/null' EXIT
 
 export PROTON_USE_WINED3D=0
 export DXVK_ASYNC=1
