@@ -168,16 +168,19 @@ ok "Fusion360 installation finished"
 
 info "Installing launcher"
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cp "$(dirname "$0")/launch-fusion.sh" \
 "$HOME/launch-fusion.sh"
+cp "$SCRIPT_DIR/fusion-window-fix.fish" \
+"$HOME/fusion-window-fix.fish"
 
 
 chmod +x "$HOME/launch-fusion.sh"
-
+chmod +x "$HOME/fusion-window-fix.fish"
 
 ok "Launcher installed"
-
+ok "Fusion window fix installed"
 
 
 # =========================
