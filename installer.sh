@@ -124,6 +124,26 @@ fi
 
 
 
+if command -v python3 >/dev/null; then
+    ok "python3 detected"
+else
+    fail "python3 not found (required for the window-fix helper)"
+fi
+
+
+
+if python3 -c "import Xlib" >/dev/null 2>&1; then
+    ok "python-xlib detected"
+else
+    fail "python-xlib not found. Install it with one of:
+    Arch/CachyOS : sudo pacman -S python-xlib
+    Fedora       : sudo dnf install python3-xlib
+    Debian       : sudo apt install python3-xlib
+    Any distro   : pip install --user python-xlib"
+fi
+
+
+
 # =========================
 # Prefix
 # =========================
@@ -172,12 +192,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cp "$(dirname "$0")/launch-fusion.sh" \
 "$HOME/launch-fusion.sh"
-cp "$SCRIPT_DIR/fusion-window-fix.fish" \
-"$HOME/fusion-window-fix.fish"
+cp "$SCRIPT_DIR/fusion-window-fix.py" \
+"$HOME/fusion-window-fix.py"
 
 
 chmod +x "$HOME/launch-fusion.sh"
-chmod +x "$HOME/fusion-window-fix.fish"
+chmod +x "$HOME/fusion-window-fix.py"
 
 ok "Launcher installed"
 ok "Fusion window fix installed"
