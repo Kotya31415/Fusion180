@@ -12,7 +12,7 @@ PROTON=$(find "$STEAM/compatibilitytools.d" \
 
 PROTON="$PROTON/proton"
 
-"$SCRIPT_DIR/fusion-window-fix.fish" &
+python3 "$SCRIPT_DIR/fusion-window-fix.py" &
 FIX_PID=$!
 
 trap 'kill "$FIX_PID" 2>/dev/null' EXIT
