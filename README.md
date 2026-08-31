@@ -62,6 +62,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Steam (native version)           | Flatpak build is **not supported** |
 | protonup-qt                      | Used to install/manage GE-Proton |
 | Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
+| python-xlib
 
 ---
 
