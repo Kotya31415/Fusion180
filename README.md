@@ -66,7 +66,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Intel        | `mesa`, `vulkan-intel`                                |
 | NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
 
-Open `protonup-qt` and install GE-Proton 11-1. This is a GUI step, no command needed.
+Open `protonup-qt` and install GE-Proton 11-1(or later). This is a GUI step, no command needed.
 Open Steam and login.
 
 **2. Get the Fusion180 scripts**
