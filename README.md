@@ -48,14 +48,11 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | CPU / iGPU | Intel i7-12700H / Iris Xe    |
 | dGPU       | NVIDIA RTX 4050 (hybrid graphics) |
 
-### Required Drivers
+---
 
-| GPU              | Packages                                              |
-|-------------------|--------------------------------------------------------|
-| Intel        | `mesa`, `vulkan-intel`                                |
-| NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
+## Installation
 
-### Required Packages
+**1. Install required packages and GE-Proton 11-1(or later)**
 
 | Package                        | Notes                          |
 |----------------------------------|---------------------------------|
@@ -64,11 +61,10 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
 | python-xlib
 
----
-
-## Installation
-
-**1. Install GE-Proton 11-1 and Steam**
+| GPU              | Packages                                              |
+|-------------------|--------------------------------------------------------|
+| Intel        | `mesa`, `vulkan-intel`                                |
+| NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
 
 Open `protonup-qt` and install GE-Proton 11-1. This is a GUI step, no command needed.
 Open Steam and login.
