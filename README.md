@@ -123,7 +123,7 @@ This removes the directory at `~/.fusion180`.
 | 2 | After signing in through the browser, Fusion shows a login error on its interface. | This is normal. Click **OK** to continue; you should be signed in correctly afterward. |
 
 
-If you run into something not listed here, please open an issue with your distro, kernel version, and full console output.
+**If you run into something not listed here, please open an issue with your distro, kernel version, and full console output.**
 
 ---
 
