@@ -60,7 +60,11 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Steam (native version)           | Flatpak build is **not supported** |
 | protonup-qt                      | Used to install/manage GE-Proton |
 | Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
-| python-xlib
+| python-xlib                      | 
+    Arch/CachyOS : sudo pacman -S python-xlib
+    Fedora       : sudo dnf install python3-xlib
+    Debian       : sudo apt install python3-xlib
+
 
 | GPU              | Packages                                              |
 |-------------------|--------------------------------------------------------|
