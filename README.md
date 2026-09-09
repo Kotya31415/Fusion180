@@ -56,6 +56,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 | Package                        | Notes                          |
 |----------------------------------|---------------------------------|
+| Autodesk Fusion installer        | Download from [Here](https://www.autodesk.com/products/fusion-360/overview)
 | Steam (native version)           | Flatpak build is **not supported** |
 | protonup-qt                      | Used to install/manage GE-Proton |
 | Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
