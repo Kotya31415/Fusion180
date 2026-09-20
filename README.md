@@ -39,7 +39,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1 , 11-5                     |
+| Compatibility tool | GE-Proton 11-1 , 11-5 ,11-7                 |
 
 ### Hardware Tested On
 
@@ -103,8 +103,10 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 ```
 **6. Set Graphics Driver**
 
-![Screenshot](./Screenshot.png)
-Set graphics driver to DirectX 11.
+![Screenshot](./Screenshot_20260920_231710.png)
+Set graphics driver to OpenGL Core Profile.
+In my environment, OpenGL Core Profile works more reliably. (In GE-Proton 11-7)
+If you encounter any issues, please try DirectX 11 as well.
 
 ---
 
