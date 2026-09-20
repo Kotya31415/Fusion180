@@ -1,140 +1,120 @@
+# Fusion180
 
-    _______          _              __   _____   _____
-	|  ____|        (_)            /_ | /  _  \ /  _  \
-	| |__ _   _ ___  _  ___  _ __   | | \ (_) / | | | |
-	|  __| | | / __|| |/ _ \| '_ \  | | /  _  \ | | | |
-	| |  | |_| \__ \| | (_) | | | | | ||  (_)  || |_| |
-	|_|   \__,_|__ /|_|\___/|_| |_| |_| \_____/ \_____/
+Turn Fusion 180° toward Linux.
 
-						 Turn Fusion 180° toward Linux.
-
-
-Fusion180 is an unofficial, community-driven guide and script set for running **Autodesk Fusion** natively on Linux, using **Steam + GE-Proton** instead of a plain Wine/DXVK prefix.
+Fusion180 is an unofficial, community-driven script set for running **Autodesk Fusion** on Linux with **Steam + GE-Proton**.
 
 ---
 
 ## Before You Start
 
-This project does **not** include the Autodesk Fusion installer.
-
-Due to Autodesk's license terms, you must download the latest installer yourself from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview).
-
-If you are unable to download the file, we recommend downloading it on Windows first and then transferring it to Linux using a USB flash drive or similar device.
-
-Place the installer in your `~/Downloads` directory (or point the installer script at its path).
-
-```
-~/Downloads/Fusion Client Downloader.exe
-```
+This project does **not** redistribute Autodesk Fusion installers.
+Download the latest installer from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview) and place it in `~/Downloads`.
 
 ---
 
-## Prerequisites
+## Features
 
-### Tested Environment
+- Unified CLI: `install / launch / doctor / repair / uninstall / version`
+- Interactive setup (prefix path, Steam root, GE-Proton version, installer path, GPU profile)
+- Native Steam + Flatpak Steam detection
+- Launch log collection under `~/.fusion180/logs`
+- Doctor report generation for issue attachments
+- Recovery flow for common launch/sign-in issues
 
-| Component        | Requirement                          |
-|-------------------|---------------------------------------|
-| Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian        |
-| Desktop           | KDE Plasma 6                         |
-| Display server    | Wayland                              |
-| Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1 , 11-5 ,11-7                 |
+---
 
-### Hardware Tested On
+## Requirements
 
-| Component | Model                         |
-|-----------|--------------------------------|
-| CPU / iGPU | Intel i7-12700H / Iris Xe    |
-| dGPU       | NVIDIA RTX 4050 (hybrid graphics) |
+| Component | Requirement |
+|---|---|
+| Steam | Native or Flatpak installation |
+| Compatibility tool | GE-Proton (installed in Steam compatibilitytools.d) |
+| Python | `python3` |
+| Python package | `python-xlib` (recommended for window-fix helper) |
+
+### python-xlib install examples
+
+- Arch/CachyOS: `sudo pacman -S python-xlib`
+- Fedora: `sudo dnf install python3-xlib`
+- Debian/Ubuntu: `sudo apt install python3-xlib`
 
 ---
 
 ## Installation
 
-**1. Install required packages and GE-Proton 11-1(or later)**
-
-| Package                        | Notes                          |
-|----------------------------------|---------------------------------|
-| Autodesk Fusion installer        | Download from [Here](https://www.autodesk.com/products/fusion-360/overview)
-| Steam (native version)           | Flatpak build is **not supported** |
-| protonup-qt                      | Used to install/manage GE-Proton |
-| Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
-| python-xlib                      | 
-    Arch/CachyOS : sudo pacman -S python-xlib
-    Fedora       : sudo dnf install python3-xlib
-    Debian       : sudo apt install python3-xlib
-
-
-| GPU              | Packages                                              |
-|-------------------|--------------------------------------------------------|
-| Intel        | `mesa`, `vulkan-intel`                                |
-| NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
-
-Open Steam and login.
-Open `protonup-qt` and install GE-Proton 11-1(or later). This is a GUI step, no command needed.
-
-**2. Get the Fusion180 scripts**
-
 ```bash
 git clone https://github.com/Kotya31415/Fusion180.git
 cd Fusion180
-chmod +x installer.sh launch-fusion.sh
+chmod +x fusion180.sh installer.sh launch-fusion.sh
+./fusion180.sh install
 ```
 
-**3. Download the Fusion installer**
-
-Download the installer from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview) and place it in `~/Downloads`:
-
-```
-~/Downloads/Fusion Client Downloader.exe
-```
-
-**4. Run the installer script**
+Backward-compatible wrappers are still available:
 
 ```bash
 ./installer.sh
+./launch-fusion.sh
 ```
 
-**5. Launch Fusion**
+---
+
+## Commands
+
+```bash
+./fusion180.sh install            # interactive setup + installer run
+./fusion180.sh launch             # launch Fusion 360
+./fusion180.sh doctor             # generate diagnostics report
+./fusion180.sh doctor /path.txt   # write diagnostics report to custom path
+./fusion180.sh repair             # recover from common launch/sign-in issues
+./fusion180.sh uninstall          # remove prefix/config/desktop integration
+./fusion180.sh version            # print CLI version
+```
+
+A convenience launcher is also installed at:
 
 ```bash
 ~/launch-fusion.sh
 ```
-**6. Set Graphics Driver**
 
-![Screenshot](./Screenshot_20260920_231710.png)
-Set graphics driver to OpenGL Core Profile.
-In my environment, OpenGL Core Profile works more reliably. (In GE-Proton 11-7)
-If you encounter any issues, please try DirectX 11 as well.
+---
+
+## Troubleshooting
+
+| Symptom | Check | Action |
+|---|---|---|
+| `No Qt platform plugin could be initialized` | `~/.fusion180/logs/latest.log` | Run `./fusion180.sh doctor` then `./fusion180.sh repair`; verify graphics/runtime libs |
+| Sign-in completed in browser but app still errors | URI handler registration | Run `./fusion180.sh repair` to refresh handlers and optionally clear caches |
+| Freeze or unstable behavior after updates | Latest launch log and Proton version | Re-run `./fusion180.sh install`, choose another GE-Proton version |
+| Keyboard/input issues | Session type (`XDG_SESSION_TYPE`) | Try relaunch, verify Wayland/X11 behavior, collect doctor report |
+
+---
+
+## FAQ
+
+### Q. Where are logs?
+- Launch logs: `~/.fusion180/logs/`
+- Latest log symlink: `~/.fusion180/logs/latest.log`
+
+### Q. How do I create an issue report?
+1. Run `./fusion180.sh doctor`
+2. Attach generated `fusion180-doctor-*.txt`
+3. Include distro, kernel, desktop/session type, and the failing command
+
+### Q. Does Flatpak Steam work?
+Yes, it is auto-detected. Native Steam is still generally the safer baseline for compatibility.
 
 ---
 
 ## Uninstallation
 
-To remove the Fusion180 prefix created by the installer:
-
 ```bash
-rm -rf ~/.fusion180
+./fusion180.sh uninstall
 ```
-
-This removes the directory at `~/.fusion180`.
-
-
-
-## Known Issues
-
-| # | Symptom | Status / Workaround |
-|---|----------|----------------------|
-| 1 | A login screen appears during Fusion installation. | This is expected — **do not log in here.** Continue the install normally. |
-| 2 | After signing in through the browser, Fusion shows a login error on its interface. | This is normal. Click **OK** to continue; you should be signed in correctly afterward. |
-
-
-**If you run into something not listed here, please open an issue with your distro, kernel version, and full console output.**
 
 ---
 
 ## Disclaimer
 
-> This project is an unofficial community guide and is not affiliated with or endorsed by Autodesk.
-> Fusion is proprietary software and must be downloaded from Autodesk's official website.
+This project is an unofficial community guide and is not affiliated with or endorsed by Autodesk.
+Fusion is proprietary software and must be downloaded from Autodesk's official website.
