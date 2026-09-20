@@ -35,7 +35,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 | Component        | Requirement                          |
 |-------------------|---------------------------------------|
-| Distro            | Arch, CachyOS, Fedora, Debian        |
+| Distro            | Arch(CachyOS, EndeavourOS) Fedora, Debian        |
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
