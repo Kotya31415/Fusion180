@@ -135,19 +135,6 @@ doctor() {
         fi
         echo
 
-        echo "## Recent launch log"
-        local latest_log="$PREFIX/logs/latest.log"
-        if [ -L "$latest_log" ] || [ -f "$latest_log" ]; then
-            tail -n 120 "$latest_log" || true
-        else
-            echo "No launch log found"
-        fi
-        echo
-
-        echo "## Known issue hints"
-        echo "- Qt plugin error: ensure correct runtime libraries and retry with repair command"
-        echo "- Sign-in freeze: use URI handlers and clear caches with repair"
-        echo "- Keyboard issues: verify XWayland/IME settings and try relaunch"
     } > "$out"
 
     ok "Doctor report written: $out"
