@@ -198,7 +198,6 @@ cp "$SCRIPT_DIR/fusion-window-fix.py" \
 
 
 chmod +x "$HOME/launch-fusion.sh"
-chmod +x "$HOME/fusion-window-fix.py"
 
 ok "Launcher installed"
 ok "Fusion window fix installed"
