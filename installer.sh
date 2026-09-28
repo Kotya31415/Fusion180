@@ -2,7 +2,6 @@
 
 set -e
 
-
 # =========================
 # Colors
 # =========================
@@ -31,7 +30,6 @@ info()
 {
     echo -e "${CYAN}[>]${RESET} $1"
 }
-
 
 
 clear
@@ -65,7 +63,6 @@ echo -e "${RESET}"
 # Variables
 # =========================
 
-
 PREFIX="$HOME/.fusion180"
 
 STEAM="$HOME/.local/share/Steam"
@@ -91,11 +88,9 @@ INSTALLER=$(find "$HOME/Downloads" \
 APPDIR="$HOME/.local/share/applications"
 
 
-
 # =========================
 # Check environment
 # =========================
-
 
 info "Checking environment"
 
@@ -107,13 +102,11 @@ else
 fi
 
 
-
 if [ -f "$PROTON" ]; then
     ok "GE-Proton detected"
 else
     fail "GE-Proton not found"
 fi
-
 
 
 if [ -f "$INSTALLER" ]; then
@@ -123,13 +116,11 @@ else
 fi
 
 
-
 if command -v python3 >/dev/null; then
     ok "python3 detected"
 else
     fail "python3 not found (required for the window-fix helper)"
 fi
-
 
 
 if python3 -c "import Xlib" >/dev/null 2>&1; then
@@ -143,14 +134,11 @@ else
 fi
 
 
-
 # =========================
 # Prefix
 # =========================
 
-
 info "Creating Proton prefix"
-
 
 mkdir -p "$PREFIX"
 
@@ -161,7 +149,6 @@ ok "Prefix created"
 # =========================
 # Install Fusion360
 # =========================
-
 
 info "Launching Fusion360 installer"
 
@@ -181,11 +168,9 @@ STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
 ok "Fusion360 installation finished"
 
 
-
 # =========================
 # Launcher
 # =========================
-
 
 info "Installing launcher"
 
@@ -207,12 +192,10 @@ ok "Fusion window fix installed"
 # URI handlers
 # =========================
 
-
 info "Registering Autodesk URI handlers"
 
 
 mkdir -p "$APPDIR"
-
 
 
 cat > "$APPDIR/adskidmgr-handler.sh" <<'EOF'
@@ -254,9 +237,7 @@ STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
 EOF
 
 
-
 chmod +x "$APPDIR/adskidmgr-handler.sh"
-
 
 
 cat > "$APPDIR/adskidmgr.desktop" <<EOF
@@ -269,7 +250,6 @@ NoDisplay=true
 EOF
 
 
-
 cat > "$APPDIR/adsk-fusion360.desktop" <<EOF
 [Desktop Entry]
 Name=Fusion 360 URI Handler
@@ -278,7 +258,6 @@ Type=Application
 MimeType=x-scheme-handler/adsk;
 NoDisplay=true
 EOF
-
 
 
 info "Updating desktop database"
@@ -309,18 +288,16 @@ EOF
 ok "URI handlers registered"
 
 
-
 # =========================
 # Finish
 # =========================
-
 
 echo
 
 echo -e "${GREEN}"
 cat <<'EOF'
 
-======================================
+=======================================
 
  Fusion 360 Linux installation complete
 
@@ -328,8 +305,7 @@ cat <<'EOF'
 
      ~/launch-fusion.sh
 
-
-======================================
+=======================================
 
 EOF
 

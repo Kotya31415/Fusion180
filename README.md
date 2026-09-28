@@ -39,7 +39,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1 , 11-5 ,11-7                 |
+| Compatibility tool | GE-Proton 11-1 , 11-5 , 11-6 , 11-7                 |
 
 ### Hardware Tested On
 
@@ -52,7 +52,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 ## Installation
 
-**1. Install required packages and GE-Proton 11-1(or later)**
+**1. Install required packages and GE-Proton 11-7(or later)**
 
 | Package                        | Notes                          |
 |----------------------------------|---------------------------------|
@@ -128,7 +128,7 @@ This removes the directory at `~/.fusion180`.
 |---|----------|----------------------|
 | 1 | A login screen appears during Fusion installation. | This is expected — **do not log in here.** Continue the install normally. |
 | 2 | After signing in through the browser, Fusion shows a login error on its interface. | This is normal. Click **OK** to continue; you should be signed in correctly afterward. |
-
+| 3 | It may not work properly with AMD graphics cards.  | I'm currently working on a fix. Please let me know if you find a solution! |
 
 **If you run into something not listed here, please open an issue with your distro, kernel version, and full console output.**
 
