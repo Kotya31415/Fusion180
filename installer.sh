@@ -294,17 +294,19 @@ ok "URI handlers registered"
 info "Creating Fusion Downloads directory"
 
 FUSION_DOWNLOADS="$HOME/FusionDownloads"
-WINUSER="$PREFIX/pfx/drive_c/users/steamuser/Documents/Downloads"
+WIN_DOWNLOADS="$PREFIX/pfx/drive_c/users/steamuser/Documents/Downloads"
 
 mkdir -p "$FUSION_DOWNLOADS"
 
-if [ ! -e "$WINUSER/Downloads" ] && [ ! -L "$WINUSER/Downloads" ]; then
-    ln -s "$FUSION_DOWNLOADS" "$WINUSER/Downloads"
+if [ ! -e "$WIN_DOWNLOADS" ] && [ ! -L "$WIN_DOWNLOADS" ]; then
+    mkdir -p "$(dirname "$WIN_DOWNLOADS")"
+    ln -s "$FUSION_DOWNLOADS" "$WIN_DOWNLOADS"
     ok "Fusion Downloads linked"
+elif [ -L "$WIN_DOWNLOADS" ]; then
+    ok "Fusion Downloads link already exists"
 else
-    ok "Fusion Downloads already exists"
+    info "Existing Fusion Downloads directory detected; skipping link"
 fi
-
 
 # ===========================
 # Finish
