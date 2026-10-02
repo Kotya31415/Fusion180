@@ -11,7 +11,8 @@
 
 Fusion180 is an unofficial, community-driven guide and script set for running **Autodesk Fusion** natively on Linux, using **Steam + GE-Proton** instead of a plain Wine/DXVK prefix.
 
-![Screenshot](./Screenshot_20261002_192404.png)
+![Screenshot](./Screenshot_20261002_234605.png)
+![Screenshot](./Screenshot_20261002_234151.png)
 
 ---
 

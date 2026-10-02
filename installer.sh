@@ -59,9 +59,9 @@ EOF
 echo -e "${RESET}"
 
 
-# =========================
+# ===========================
 # Variables
-# =========================
+# ===========================
 
 PREFIX="$HOME/.fusion180"
 
@@ -88,9 +88,9 @@ INSTALLER=$(find "$HOME/Downloads" \
 APPDIR="$HOME/.local/share/applications"
 
 
-# =========================
+# ===========================
 # Check environment
-# =========================
+# ===========================
 
 info "Checking environment"
 
@@ -134,9 +134,9 @@ else
 fi
 
 
-# =========================
+# ===========================
 # Prefix
-# =========================
+# ===========================
 
 info "Creating Proton prefix"
 
@@ -145,10 +145,28 @@ mkdir -p "$PREFIX"
 ok "Prefix created"
 
 
+# ===========================
+# Fusion Downloads directory
+# ===========================
 
-# =========================
+info "Creating Fusion Downloads directory"
+
+FUSION_DOWNLOADS="$HOME/FusionDownloads"
+WINUSER="$PREFIX/pfx/drive_c/users/steamuser"
+
+mkdir -p "$FUSION_DOWNLOADS"
+
+if [ ! -e "$WINUSER/Downloads" ] && [ ! -L "$WINUSER/Downloads" ]; then
+    ln -s "$FUSION_DOWNLOADS" "$WINUSER/Downloads"
+    ok "Fusion Downloads linked"
+else
+    ok "Fusion Downloads already exists"
+fi
+
+
+# ===========================
 # Install Fusion360
-# =========================
+# ===========================
 
 info "Launching Fusion360 installer"
 
@@ -168,9 +186,9 @@ STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
 ok "Fusion360 installation finished"
 
 
-# =========================
+# ===========================
 # Launcher
-# =========================
+# ===========================
 
 info "Installing launcher"
 
@@ -188,9 +206,9 @@ ok "Launcher installed"
 ok "Fusion window fix installed"
 
 
-# =========================
+# ===========================
 # URI handlers
-# =========================
+# ===========================
 
 info "Registering Autodesk URI handlers"
 
@@ -288,9 +306,9 @@ EOF
 ok "URI handlers registered"
 
 
-# =========================
+# ===========================
 # Finish
-# =========================
+# ===========================
 
 echo
 
