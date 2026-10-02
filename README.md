@@ -108,7 +108,7 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 
 ![Screenshot](./Screenshot_20260920_231710.png)
 When using OpenGL, DXVK is essentially irrelevant for the corresponding rendering portion of Fusion. \
-However, GPU acceleration may still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
+However, GPU acceleration still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
 In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
 
