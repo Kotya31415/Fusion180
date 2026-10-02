@@ -48,7 +48,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 | Component | Model                         |
 |-----------|--------------------------------|
-| CPU       | Intel i7-12700H , Intel I5-6500T |
+| CPU       | Intel i7-12700H , Intel i5-6500T |
 | GPU       | NVIDIA RTX 4050 , Intel Iris Xe , Intel HD Graphics 530 |
 
 ---
@@ -112,6 +112,11 @@ When using OpenGL, DXVK is essentially irrelevant for the corresponding renderin
 However, GPU acceleration still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
 In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
+
+**7. Tips for Use**
+
+![Screenshot](./Screenshot_20261003_004230.png)
+The “Downloads” directory within GE-Proton is referred to as “FusionDownloads.”
 
 ---
 
