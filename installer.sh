@@ -294,7 +294,7 @@ ok "URI handlers registered"
 info "Creating Fusion Downloads directory"
 
 FUSION_DOWNLOADS="$HOME/FusionDownloads"
-WINUSER="$PREFIX/pfx/drive_c/users/steamuser"
+WINUSER="$PREFIX/pfx/drive_c/users/steamuser/Documents/Downloads"
 
 mkdir -p "$FUSION_DOWNLOADS"
 
