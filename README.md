@@ -21,7 +21,7 @@ This project does **not** include the Autodesk Fusion installer.
 
 Due to Autodesk's license terms, you must download the latest installer yourself from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview).
 
-*On Linux, you may not be able to download it. If you install an extension like [this](https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/) to spoof your User-Agent as Windows, you'll be able to download it.*
+**On Linux, you may not be able to download it. If you install an extension like [this](https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/) to spoof your User-Agent as Windows, you'll be able to download it.**
 
 Place the installer in your `~/Downloads` directory (or point the installer script at its path).
 
