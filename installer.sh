@@ -146,25 +146,6 @@ ok "Prefix created"
 
 
 # ===========================
-# Fusion Downloads directory
-# ===========================
-
-info "Creating Fusion Downloads directory"
-
-FUSION_DOWNLOADS="$HOME/FusionDownloads"
-WINUSER="$PREFIX/pfx/drive_c/users/steamuser"
-
-mkdir -p "$FUSION_DOWNLOADS"
-
-if [ ! -e "$WINUSER/Downloads" ] && [ ! -L "$WINUSER/Downloads" ]; then
-    ln -s "$FUSION_DOWNLOADS" "$WINUSER/Downloads"
-    ok "Fusion Downloads linked"
-else
-    ok "Fusion Downloads already exists"
-fi
-
-
-# ===========================
 # Install Fusion360
 # ===========================
 
@@ -304,6 +285,25 @@ x-scheme-handler/adskidmgr=adskidmgr.desktop;
 EOF
 
 ok "URI handlers registered"
+
+
+# ===========================
+# Fusion Downloads directory
+# ===========================
+
+info "Creating Fusion Downloads directory"
+
+FUSION_DOWNLOADS="$HOME/FusionDownloads"
+WINUSER="$PREFIX/pfx/drive_c/users/steamuser"
+
+mkdir -p "$FUSION_DOWNLOADS"
+
+if [ ! -e "$WINUSER/Downloads" ] && [ ! -L "$WINUSER/Downloads" ]; then
+    ln -s "$FUSION_DOWNLOADS" "$WINUSER/Downloads"
+    ok "Fusion Downloads linked"
+else
+    ok "Fusion Downloads already exists"
+fi
 
 
 # ===========================
