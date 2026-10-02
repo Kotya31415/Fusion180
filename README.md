@@ -21,7 +21,7 @@ This project does **not** include the Autodesk Fusion installer.
 
 Due to Autodesk's license terms, you must download the latest installer yourself from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview).
 
-If you are unable to download the file, we recommend downloading it on Windows first and then transferring it to Linux using a USB flash drive or similar device.
+*On Linux, you may not be able to download it. If you install an extension like [this](https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/) to spoof your User-Agent as Windows, you'll be able to download it.*
 
 Place the installer in your `~/Downloads` directory (or point the installer script at its path).
 
@@ -41,7 +41,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1 , 11-5 , 11-6 , 11-7                 |
+| Compatibility tool | GE-Proton 11-1, 11-5, 11-6, 11-7                 |
 
 ### Hardware Tested On
 
@@ -62,10 +62,11 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Steam (native version)           | Flatpak build is **not supported** |
 | protonup-qt                      | Used to install/manage GE-Proton |
 | Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
-| python-xlib                      | 
-    Arch/CachyOS : sudo pacman -S python-xlib
-    Fedora       : sudo dnf install python3-xlib
-    Debian       : sudo apt install python3-xlib
+| python-xlib                      | Refer to the command below |
+
+    Arch/Arch based distros : sudo pacman -S python-xlib
+    Fedora                  : sudo dnf install python3-xlib
+    Debian                  : sudo apt install python3-xlib
 
 
 | GPU              | Packages                                              |
@@ -74,7 +75,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
 
 Open Steam and login.
-Open `protonup-qt` and install GE-Proton 11-1(or later). This is a GUI step, no command needed.
+Open `protonup-qt` and install GE-Proton 11-7(or later). This is a GUI step, no command needed.
 
 **2. Get the Fusion180 scripts**
 
@@ -106,9 +107,10 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 **6. Set Graphics Driver**
 
 ![Screenshot](./Screenshot_20260920_231710.png)
-Set graphics driver to OpenGL Core Profile.
-In my environment, OpenGL Core Profile works more reliably. (In GE-Proton 11-7)
-If you encounter any issues, please try DirectX 11 as well.
+When using OpenGL, DXVK is essentially irrelevant for the corresponding rendering portion of Fusion. \
+However, GPU acceleration may still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
+In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
+**DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
 
 ---
 
