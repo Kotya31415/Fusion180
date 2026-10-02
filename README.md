@@ -47,8 +47,8 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 | Component | Model                         |
 |-----------|--------------------------------|
-| CPU / iGPU | Intel i7-12700H / Iris Xe    |
-| dGPU       | NVIDIA RTX 4050 (hybrid graphics) |
+| CPU       | Intel i7-12700H                 |
+| GPU       | NVIDIA RTX 4050 , Intel Iris Xe |
 
 ---
 
