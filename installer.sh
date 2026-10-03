@@ -288,69 +288,6 @@ ok "URI handlers registered"
 
 
 # ===========================
-# Fusion Downloads directory
-# ===========================
-
-info "Setting up Fusion Downloads"
-
-FUSION_DOWNLOADS="$HOME/FusionDownloads"
-WIN_USER="$PREFIX/pfx/drive_c/users/steamuser"
-WIN_DOWNLOADS="$WIN_USER/Documents/Downloads"
-
-mkdir -p "$FUSION_DOWNLOADS"
-mkdir -p "$WIN_USER/Documents"
-
-if [ -L "$WIN_DOWNLOADS" ]; then
-
-    if [ "$(readlink -f "$WIN_DOWNLOADS")" = "$(readlink -f "$FUSION_DOWNLOADS")" ]; then
-        ok "Fusion Downloads already linked"
-    else
-        fail "Downloads is linked to another location"
-    fi
-
-elif [ -e "$WIN_DOWNLOADS" ]; then
-
-    if [ ! -d "$WIN_DOWNLOADS" ]; then
-        fail "Downloads exists but is not a directory"
-    fi
-
-    info "Preserving existing Downloads files"
-
-    if ! cp -an "$WIN_DOWNLOADS/." "$FUSION_DOWNLOADS/"; then
-        fail "Failed to preserve existing Downloads files"
-    fi
-
-    BACKUP="$WIN_DOWNLOADS.backup-$(date +%Y%m%d-%H%M%S)"
-
-    if ! mv "$WIN_DOWNLOADS" "$BACKUP"; then
-        fail "Failed to backup existing Downloads directory"
-    fi
-
-    if ! ln -s "$FUSION_DOWNLOADS" "$WIN_DOWNLOADS"; then
-        mv "$BACKUP" "$WIN_DOWNLOADS"
-        fail "Failed to create Downloads link"
-    fi
-
-    ok "Existing Downloads backed up"
-    ok "Fusion Downloads linked"
-
-else
-
-    if ! ln -s "$FUSION_DOWNLOADS" "$WIN_DOWNLOADS"; then
-        fail "Failed to create Downloads link"
-    fi
-
-    ok "Fusion Downloads linked"
-
-fi
-
-if [ "$(readlink -f "$WIN_DOWNLOADS")" != "$(readlink -f "$FUSION_DOWNLOADS")" ]; then
-    fail "Fusion Downloads link verification failed"
-fi
-
-ok "Fusion Downloads verified"
-
-# ===========================
 # Finish
 # ===========================
 

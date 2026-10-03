@@ -113,11 +113,6 @@ However, GPU acceleration still function via OpenGL. If you want to use DXVK, yo
 In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
 
-**7. Tips for Use**
-
-![Screenshot](./Screenshot_20261003_004230.png)
-The “Downloads” directory within GE-Proton is referred to as “FusionDownloads.”
-
 ---
 
 ## Uninstallation
