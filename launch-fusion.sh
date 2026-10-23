@@ -26,7 +26,10 @@ export PROTON_USE_XALIA=0
 export STEAM_COMPAT_DATA_PATH="$PREFIX"
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM"
 
-
+if [ -d "$PREFIX/pfx/drive_c" ]; then
+    QL="$PREFIX/pfx/drive_c/users/steamuser/AppData/Roaming/Microsoft/Internet Explorer/Quick Launch"
+    mkdir -p "$QL/User Pinned/ImplicitAppShortcuts" "$QL/User Pinned/TaskBar"
+fi
 
 FUSION=$(find "$PREFIX" \
 -name Fusion360.exe \

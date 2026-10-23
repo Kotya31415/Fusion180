@@ -180,7 +180,6 @@ cp "$(dirname "$0")/launch-fusion.sh" \
 cp "$SCRIPT_DIR/fusion-window-fix.py" \
 "$HOME/fusion-window-fix.py"
 
-
 chmod +x "$HOME/launch-fusion.sh"
 
 ok "Launcher installed"
@@ -285,6 +284,21 @@ x-scheme-handler/adskidmgr=adskidmgr.desktop;
 EOF
 
 ok "URI handlers registered"
+
+
+# ===========================
+# Folders fixes
+# ===========================
+
+info "Preparing Wine Required folders (needed for Fusion updates)"
+
+if [ -d "$PREFIX/pfx/drive_c" ]; then
+    QL="$PREFIX/pfx/drive_c/users/steamuser/AppData/Roaming/Microsoft/Internet Explorer/Quick Launch"
+    mkdir -p "$QL/User Pinned/ImplicitAppShortcuts" "$QL/User Pinned/TaskBar" \
+        || info "Could not create known folders (Fusion updates may fail)"
+fi
+
+ok "Required folders prepared"
 
 
 # ===========================
