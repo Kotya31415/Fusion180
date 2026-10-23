@@ -212,9 +212,8 @@ PROTON=$(find "$STEAM/compatibilitytools.d" \
 PROTON="$PROTON/proton"
 
 
-IDM=$(find "$PREFIX" \
--name AdskIdentityManager.exe \
-2>/dev/null | head -n1)
+IDM=$(find "$PREFIX" -name AdskIdentityManager.exe -printf '%T@ %p\n' 2>/dev/null \
+    | sort -n | tail -n1 | cut -d' ' -f2-)
 
 
 if [ -z "$IDM" ]; then

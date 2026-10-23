@@ -31,11 +31,8 @@ if [ -d "$PREFIX/pfx/drive_c" ]; then
     mkdir -p "$QL/User Pinned/ImplicitAppShortcuts" "$QL/User Pinned/TaskBar"
 fi
 
-FUSION=$(find "$PREFIX" \
--name Fusion360.exe \
-2>/dev/null | head -n1)
-
-
+FUSION=$(find "$PREFIX" -name Fusion360.exe -printf '%T@ %p\n' 2>/dev/null \
+    | sort -n | tail -n1 | cut -d' ' -f2-)
 
 if [ -z "$FUSION" ]; then
     echo "Fusion360.exe not found"
