@@ -83,7 +83,7 @@ Open `protonup-qt` and install GE-Proton 11-7(or later). This is a GUI step, no 
 ```bash
 git clone https://github.com/Kotya31415/Fusion180.git
 cd Fusion180
-chmod +x installer.sh launch-fusion.sh
+chmod +x installer.sh launch-fusion.sh update.sh
 ```
 
 **3. Download the Fusion installer**
@@ -113,6 +113,12 @@ However, GPU acceleration still function via OpenGL. If you want to use DXVK, yo
 In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
 
+**7. Update Fusion180**
+
+```bash
+cd Fusion180
+./update.sh
+```
 ---
 
 ## Uninstallation
