@@ -112,6 +112,7 @@ When using OpenGL, DXVK is essentially irrelevant for the corresponding renderin
 However, GPU acceleration still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
 In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
+
 ---
 
 ## Update Fusion180
