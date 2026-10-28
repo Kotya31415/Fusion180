@@ -42,7 +42,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | Desktop           | KDE Plasma 6                         |
 | Display server    | Wayland                              |
 | Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1, 11-5, 11-6, 11-7                 |
+| Compatibility tool | GE-Proton 11-1 ~ 11-11               |
 
 ### Hardware Tested On
 
@@ -76,7 +76,7 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 | NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
 
 Open Steam and login.
-Open `protonup-qt` and install GE-Proton 11-7(or later). This is a GUI step, no command needed.
+Open `protonup-qt` and install latest GE-Proton. This is a GUI step, no command needed.
 
 **2. Get the Fusion180 scripts**
 
@@ -110,7 +110,7 @@ Download the installer from the [official Autodesk website](https://www.autodesk
 ![Screenshot](./Screenshot_20260920_231710.png)
 When using OpenGL, DXVK is essentially irrelevant for the corresponding rendering portion of Fusion. \
 However, GPU acceleration still function via OpenGL. If you want to use DXVK, you must set Fusion to DirectX 11.\
-In my environment, OpenGL works more reliably. (In GE-Proton 11-7)\
+In my environment, OpenGL works more reliably. (In GE-Proton 11-11)\
 **DirectX 11 offers better performance, but it may cause problems. If you encounter any issues, please try OpenGL as well.**
 
 ---
