@@ -26,6 +26,22 @@ export PROTON_USE_XALIA=0
 export STEAM_COMPAT_DATA_PATH="$PREFIX"
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM"
 
+# DPI  96=100% 120=125% 144=150% 192=200%
+#   ~/launch-fusion.sh --dpi 144
+if [ "$1" = "--dpi" ]; then
+    FUSION_DPI="$2"
+    shift 2
+fi
+
+if [ -n "$FUSION_DPI" ]; then
+    case "$FUSION_DPI" in
+        ''|*[!0-9]*) echo "Invalid DPI: $FUSION_DPI (use a number such as 120, 144, 192)"; exit 1 ;;
+    esac
+    if [ -d "$PREFIX/pfx/drive_c" ]; then
+        "$PROTON" run reg add 'HKCU\Control Panel\Desktop' /v LogPixels /t REG_DWORD /d "$FUSION_DPI" /f >/dev/null 2>&1
+    fi
+fi
+
 if [ -d "$PREFIX/pfx/drive_c" ]; then
     QL="$PREFIX/pfx/drive_c/users/steamuser/AppData/Roaming/Microsoft/Internet Explorer/Quick Launch"
     mkdir -p "$QL/User Pinned/ImplicitAppShortcuts" "$QL/User Pinned/TaskBar"
