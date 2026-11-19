@@ -83,7 +83,6 @@ Open `protonup-qt` and install latest GE-Proton. This is a GUI step, no command 
 ```bash
 git clone https://github.com/Kotya31415/Fusion180.git
 cd Fusion180
-chmod +x installer.sh launch-fusion.sh update.sh
 ```
 
 **3. Download the Fusion installer**
