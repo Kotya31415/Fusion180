@@ -212,7 +212,7 @@ ge_install_tag() {
 
     work=$(mktemp -d "$PROTON_HOME/.fusion180-dl.XXXXXX")
 
-    info "Downloading $asset.tar.gz (this is a large file)"
+    info "Downloading $asset.tar.gz (this is about 600MB)"
     if ! curl -fL --retry 3 --retry-delay 2 --progress-bar \
             -o "$work/$asset.tar.gz" "$GE_RELEASES_URL/download/$tag/$asset.tar.gz"; then
         rm -rf "$work"; fail "Download failed"
