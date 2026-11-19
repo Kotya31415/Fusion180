@@ -9,26 +9,10 @@
 						 Turn Fusion 180° toward Linux.
 
 
-Fusion180 is an unofficial, community-driven guide and script set for running **Autodesk Fusion** natively on Linux, using **Steam + GE-Proton** instead of a plain Wine/DXVK prefix.
+Fusion180 is an unofficial, community-driven guide and script set for running **Autodesk Fusion** natively on Linux, using **GE-Proton** directly — **no Steam required**.
 
 ![Screenshot](./Screenshot_20261002_234605.png)
 ![Screenshot](./Screenshot_20261002_234151.png)
-
----
-
-## Before You Start
-
-This project does **not** include the Autodesk Fusion installer.
-
-Due to Autodesk's license terms, you must download the latest installer yourself from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview).
-
-**On Linux, you may not be able to download it. If you install an extension like [this](https://addons.mozilla.org/en-US/firefox/addon/user-agent-string-switcher/) to spoof your User-Agent as Windows, you'll be able to download it.**
-
-Place the installer in your `~/Downloads` directory (or point the installer script at its path).
-
-```
-~/Downloads/Fusion Client Downloader.exe
-```
 
 ---
 
@@ -36,13 +20,12 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 ### Tested Environment
 
-| Component        | Requirement                          |
+| Component        | Requirement |
 |-------------------|---------------------------------------|
-| Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian        |
-| Desktop           | KDE Plasma 6                         |
-| Display server    | Wayland                              |
-| Steam             | Native package (**Flatpak not supported**) |
-| Compatibility tool | GE-Proton 11-1 ~ 11-11               |
+| Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian |
+| Desktop           | KDE Plasma 6 |
+| Display server    | Wayland |
+| Compatibility tool | GE-Proton 11-1 ~ 11-12 |
 
 ### Hardware Tested On
 
@@ -55,28 +38,15 @@ Place the installer in your `~/Downloads` directory (or point the installer scri
 
 ## Installation
 
-**1. Install required packages and GE-Proton 11-7(or later)**
+**1. GPU drivers**
 
-| Package                        | Notes                          |
-|----------------------------------|---------------------------------|
-| Autodesk Fusion installer        | Download from [Here](https://www.autodesk.com/products/fusion-360/overview)
-| Steam (native version)           | Flatpak build is **not supported** |
-| protonup-qt                      | Used to install/manage GE-Proton |
-| Fusion Installer (from Autodesk) | Not redistributed — download it yourself |
-| python-xlib                      | Refer to the command below |
+| GPU    | What you need |
+|--------|---------------|
+| NVIDIA | The proprietary NVIDIA driver  |
+| AMD    | Mesa RADV on the `amdgpu` kernel driver. |
+| Intel  | Mesa ANV (`mesa-vulkan-drivers` / `vulkan-intel`) |
 
-    Arch/Arch based distros : sudo pacman -S python-xlib
-    Fedora                  : sudo dnf install python3-xlib
-    Debian                  : sudo apt install python3-xlib
-
-
-| GPU              | Packages                                              |
-|-------------------|--------------------------------------------------------|
-| Intel        | `mesa`, `vulkan-intel`                                |
-| NVIDIA    | `nvidia-open-dkms` (or `nvidia-dkms`), `nvidia-utils`, `vulkan-icd-loader` |
-
-Open Steam and login.
-Open `protonup-qt` and install latest GE-Proton. This is a GUI step, no command needed.
+The installer checks your GPU and Vulkan setup and tells you which side is missing if something is wrong.
 
 **2. Get the Fusion180 scripts**
 
@@ -85,26 +55,18 @@ git clone https://github.com/Kotya31415/Fusion180.git
 cd Fusion180
 ```
 
-**3. Download the Fusion installer**
-
-Download the installer from the [official Autodesk website](https://www.autodesk.com/products/fusion-360/overview) and place it in `~/Downloads`:
-
-```
-~/Downloads/Fusion Client Downloader.exe
-```
-
-**4. Run the installer script**
+**3. Run the installer script**
 
 ```bash
 ./installer.sh
 ```
 
-**5. Launch Fusion**
+**4. Launch Fusion**
 
 ```bash
 ~/launch-fusion.sh
 ```
-**6. Set Graphics Driver**
+**5. Set Graphics Driver**
 
 ![Screenshot](./Screenshot_20260920_231710.png)
 When using OpenGL, DXVK is essentially irrelevant for the corresponding rendering portion of Fusion. \
@@ -128,9 +90,11 @@ To remove the Fusion180 prefix created by the installer:
 
 ```bash
 rm -rf ~/.fusion180
+rm -f ~/launch-fusion.sh ~/fusion-window-fix.py
 ```
 
-This removes the directory at `~/.fusion180`.
+This removes the directory at `~/.fusion180`. 
+
 
 
 

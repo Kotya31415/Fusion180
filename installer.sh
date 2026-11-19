@@ -10,12 +10,19 @@ GREEN="\033[1;32m"
 RED="\033[1;31m"
 BLUE="\033[1;34m"
 CYAN="\033[1;36m"
+YELLOW="\033[1;33m"
 RESET="\033[0m"
 
 
 ok()
 {
     echo -e "${GREEN}[✓]${RESET} $1"
+}
+
+
+warn()
+{
+    echo -e "${YELLOW}[!]${RESET} $1"
 }
 
 
@@ -65,25 +72,15 @@ echo -e "${RESET}"
 
 PREFIX="$HOME/.fusion180"
 
-STEAM="$HOME/.local/share/Steam"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-PROTON=$(find "$STEAM/compatibilitytools.d" \
-    -maxdepth 1 \
-    -type d \
-    -name "GE-Proton*" \
-    | sort -V \
-    | tail -n1)
-
-[ -n "$PROTON" ] || fail "GE-Proton not found"
-
-PROTON="$PROTON/proton"
+source "$SCRIPT_DIR/deps.sh"
 
 INSTALLER=$(find "$HOME/Downloads" \
     -maxdepth 1 \
     -iname "*Fusion*.exe" \
     | head -n1)
 
-[ -n "$INSTALLER" ] || fail "Fusion installer not found"
 
 APPDIR="$HOME/.local/share/applications"
 
@@ -94,44 +91,34 @@ APPDIR="$HOME/.local/share/applications"
 
 info "Checking environment"
 
+ensure_python_xlib
+ensure_ge_proton
 
-if command -v steam >/dev/null; then
-    ok "Steam detected"
-else
-    fail "Steam not found"
+PROTON_DIR=$(ge_find_installed)
+[ -n "$PROTON_DIR" ] || fail "GE-Proton not found"
+PROTON="$PROTON_DIR/proton"
+ok "Using $(basename "$PROTON_DIR")"
+
+check_proton_libs
+check_graphics
+
+
+if [ -z "$INSTALLER" ]; then
+    info "Fusion installer not in ~/Downloads; downloading it from Autodesk"
+    mkdir -p "$HOME/Downloads"
+    if command -v curl >/dev/null \
+        && curl -fL --progress-bar -o "$HOME/Downloads/Fusion Client Downloader.exe" \
+            "https://dl.appstreaming.autodesk.com/production/installers/Fusion%20Client%20Downloader.exe" \
+        && [ "$(head -c 2 "$HOME/Downloads/Fusion Client Downloader.exe" 2>/dev/null)" = "MZ" ]; then
+        INSTALLER="$HOME/Downloads/Fusion Client Downloader.exe"
+        ok "Fusion installer downloaded"
+    else
+        rm -f "$HOME/Downloads/Fusion Client Downloader.exe"
+        fail "Fusion installer download failed. Download it manually from https://www.autodesk.com/products/fusion-360/overview and place it in ~/Downloads"
+    fi
 fi
 
-
-if [ -f "$PROTON" ]; then
-    ok "GE-Proton detected"
-else
-    fail "GE-Proton not found"
-fi
-
-
-if [ -f "$INSTALLER" ]; then
-    ok "Fusion Installer detected"
-else
-    fail "Fusion installer missing"
-fi
-
-
-if command -v python3 >/dev/null; then
-    ok "python3 detected"
-else
-    fail "python3 not found (required for the window-fix helper)"
-fi
-
-
-if python3 -c "import Xlib" >/dev/null 2>&1; then
-    ok "python-xlib detected"
-else
-    fail "python-xlib not found. Install it with one of:
-    Arch/CachyOS : sudo pacman -S python-xlib
-    Fedora       : sudo dnf install python3-xlib
-    Debian       : sudo apt install python3-xlib
-    Any distro   : pip install --user python-xlib"
-fi
+ok "Fusion Installer detected: $(basename "$INSTALLER")"
 
 
 # ===========================
@@ -159,7 +146,7 @@ NO_AT_BRIDGE=1 \
 WINEDLLOVERRIDES="bcp47langs=" \
 PROTON_USE_XALIA=0 \
 STEAM_COMPAT_DATA_PATH="$PREFIX" \
-STEAM_COMPAT_CLIENT_INSTALL_PATH="$STEAM" \
+STEAM_COMPAT_CLIENT_INSTALL_PATH="$PREFIX" \
 "$PROTON" run "$INSTALLER"
 
 
@@ -222,9 +209,12 @@ EOF
 
 info "Updating desktop database"
 
-update-desktop-database "$APPDIR"
-
-ok "Desktop database updated"
+if command -v update-desktop-database >/dev/null; then
+    update-desktop-database "$APPDIR" || warn "update-desktop-database failed (continuing)"
+    ok "Desktop database updated"
+else
+    warn "update-desktop-database not found (skipping)"
+fi
 
 info "Registering MIME handlers"
 
@@ -274,9 +264,9 @@ cat <<'EOF'
 
 =======================================
 
- Fusion 360 Linux installation complete
+ Fusion 360 installation complete!
 
- Start Fusion 360:
+ Start Fusion :
 
      ~/launch-fusion.sh
 

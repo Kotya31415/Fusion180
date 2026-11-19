@@ -63,13 +63,41 @@ main() {
         warn "adskidmgr-handler.sh is not in this version of the repository (skipped)"
     fi
 
-    if command -v python3 >/dev/null && python3 -c "import Xlib" >/dev/null 2>&1; then
+    if command -v python3 >/dev/null && { python3 -c "import Xlib" >/dev/null 2>&1 || PYTHONPATH="$HOME/.local/share/fusion180/pylib" python3 -c "import Xlib" >/dev/null 2>&1; }; then
         ok "python-xlib detected"
     else
-        warn "python3 or python-xlib not found (needed by the window-fix helper)
-    Fedora : sudo dnf install python3-xlib
-    Arch   : sudo pacman -S python-xlib
-    Debian : sudo apt install python3-xlib"
+        warn "python3 or python-xlib not found (needed by the window-fix helper). Run ./deps.sh to set it up."
+    fi
+
+    info "Checking for a new GE-Proton"
+
+    if [ -f "$SCRIPT_DIR/deps.sh" ]; then
+        # shellcheck disable=SC1091
+        source "$SCRIPT_DIR/deps.sh"
+
+        BEFORE="$(basename "$(ge_find_installed)" 2>/dev/null)"
+
+        if FUSION180_UPDATE_PROTON=1 ensure_ge_proton; then
+            AFTER="$(basename "$(ge_find_installed)" 2>/dev/null)"
+            if [ -n "$BEFORE" ] && [ "$BEFORE" != "$AFTER" ]; then
+                ok "GE-Proton updated: $BEFORE -> $AFTER (previous version kept as fallback)"
+            fi
+
+            prune_ge_protons
+
+            local versions=()
+            mapfile -t versions < <(find "$PROTON_HOME" -mindepth 1 -maxdepth 1 -type d -name 'GE-Proton*' -printf '%f\n' 2>/dev/null | sort -V)
+            if [ "${#versions[@]}" -ge 1 ]; then
+                info "GE-Proton in use:    ${versions[-1]}"
+            fi
+            if [ "${#versions[@]}" -ge 2 ]; then
+                info "GE-Proton fallback:  ${versions[-2]}"
+            fi
+        else
+            warn "GE-Proton update check failed; keeping the current version and skipping cleanup"
+        fi
+    else
+        warn "deps.sh is not in this version of the repository; GE-Proton update skipped"
     fi
 
     echo
