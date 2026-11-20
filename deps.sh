@@ -5,8 +5,8 @@
 #   ./deps.sh --yes      Answers “yes” to all questions (Non-interactive)
 #   ./deps.sh --update-proton  Get the latest version even if it’s already installed (does not remove older versions)
 #
-# Environment variables (optional):
-#   FUSION180_ASSUME_YES=1     Answer “yes” to all prompts
+# Environment variables :
+#   FUSION180_ASSUME_YES=1     Answer “yes” to all
 #   FUSION180_PROTON_DIR=...   Location of GE-Proton (default: ~/.fusion180/protons)
 #   FUSION180_PROTON_TAG=...   Specify a specific GE-Proton version to download (e.g., GE-Proton11-11)
 #   FUSION180_UPDATE_PROTON=1  Download the latest version even if it’s already installed
@@ -127,20 +127,46 @@ ensure_python_xlib() {
 # --- Proton dependencies ---
 
 check_proton_libs() {
-    local cur g f out required optional
+    local cur g f out required optional dl_req dl_warn cache soname
     cur=$(ge_find_installed)
     [ -n "$cur" ] || return 0
     g="$cur/files"
     [ -d "$g/lib/wine/x86_64-unix" ] || return 0
+
+
+    if [ -d "$g/lib/wine/i386-unix" ] && [ ! -e "${FUSION180_LD32:-/lib/ld-linux.so.2}" ]; then
+        warn "32-bit loader not found (/lib/ld-linux.so.2): Proton's 32-bit Wine components cannot start"
+        detect_distro
+        case "$PKG" in
+            apt)    echo "      Fix:  sudo dpkg --add-architecture i386 && sudo apt update && sudo apt install -y libc6:i386 libstdc++6:i386" ;;
+            dnf)    echo "      Fix:  sudo dnf install -y glibc.i686 libstdc++.i686" ;;
+            pacman) echo "      Fix:  sudo pacman -S lib32-glibc lib32-gcc-libs" ;;
+            *)      echo "      Install your distribution's 32-bit glibc (i386/i686) package." ;;
+        esac
+    fi
+
     command -v ldd >/dev/null 2>&1 || { warn "ldd not found; skipping the library check"; return 0; }
 
-    out=$(for f in "$g/bin/wineserver" "$g"/lib/wine/x86_64-unix/*; do
+    out=$(for f in "$g/bin/wineserver" "$g"/lib/wine/x86_64-unix/* "$g"/lib/wine/i386-unix/*; do
             [ -f "$f" ] || continue
-            LD_LIBRARY_PATH="$g/lib:$g/lib64:$g/lib/wine/x86_64-unix" ldd "$f" 2>/dev/null \
+            LD_LIBRARY_PATH="$g/lib:$g/lib64:$g/lib/wine/x86_64-unix:$g/lib/wine/i386-unix" ldd "$f" 2>/dev/null \
                 | awk -v f="$(basename "$f")" '/not found/{print $1 "|" f}'
           done | sort -u)
 
-    if [ -z "$out" ]; then
+    dl_req=""; dl_warn=""
+    if command -v ldconfig >/dev/null 2>&1; then
+        cache=$(ldconfig -p 2>/dev/null)
+        for soname in libfreetype.so.6 libfontconfig.so.1; do
+            echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || dl_req="$dl_req $soname(64-bit)"
+            echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || dl_req="$dl_req $soname(32-bit)"
+        done
+        for soname in libgnutls.so.30 libvulkan.so.1; do
+            echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || dl_warn="$dl_warn $soname(64-bit)"
+            echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || dl_warn="$dl_warn $soname(32-bit)"
+        done
+    fi
+
+    if [ -z "$out" ] && [ -z "$dl_req" ] && [ -z "$dl_warn" ]; then
         ok "Proton host libraries: nothing missing"
         return 0
     fi
@@ -157,11 +183,25 @@ check_proton_libs() {
             apt)    echo "      Find the package:  apt-file search <library name>" ;;
             pacman) echo "      Find the package:  pacman -F <library name>" ;;
         esac
-    else
+    fi
+    if [ -n "$dl_req" ]; then
+        warn "Runtime-loaded (dlopen) libraries are missing:$dl_req"
+        echo "      Without FreeType/Fontconfig, Wine renders no text in the installer."
+        detect_distro
+        case "$PKG" in
+            apt)    echo "      Fix:  sudo apt install -y libfreetype6 libfreetype6:i386 libfontconfig1 libfontconfig1:i386" ;;
+            dnf)    echo "      Fix:  sudo dnf install -y freetype freetype.i686 fontconfig fontconfig.i686" ;;
+            pacman) echo "      Fix:  sudo pacman -S freetype2 lib32-freetype2 fontconfig lib32-fontconfig" ;;
+        esac
+    fi
+    if [ -z "$required" ] && [ -z "$dl_req" ]; then
         ok "Proton host libraries: nothing essential is missing"
     fi
     if [ -n "$optional" ]; then
         info "Optional features unavailable (media decoding, VR, packet capture, TTS, Wayland driver): $(echo "$optional" | cut -d'|' -f1 | tr '\n' ' ')"
+    fi
+    if [ -n "$dl_warn" ]; then
+        info "Runtime-loaded libraries missing (sign-in HTTPS / Vulkan loader may fail):$dl_warn"
     fi
 }
 
