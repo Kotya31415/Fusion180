@@ -272,7 +272,7 @@ _ensure_ge_proton() {
         return 0
     fi
 
-    confirm "Download $tag (about 600 MB) from GitHub to $PROTON_HOME?" \
+    confirm "Download $tag from GitHub to $PROTON_HOME?" \
         || fail "GE-Proton is required. Run ./deps.sh to download it, or place it manually in $PROTON_HOME."
 
     ge_install_tag "$tag"
