@@ -90,7 +90,19 @@ To remove the Fusion180 prefix created by the installer:
 
 ```bash
 rm -rf ~/.fusion180
+# Launcher and Window-fix program
 rm -f ~/launch-fusion.sh ~/fusion-window-fix.py
+
+# Application-menu entry, URI handlers and icon
+rm -f ~/.local/share/applications/fusion180.desktop \
+      ~/.local/share/applications/adsk-fusion360.desktop \
+      ~/.local/share/applications/adskidmgr.desktop \
+      ~/.local/share/applications/adskidmgr-handler.sh
+rm -f ~/.local/share/icons/hicolor/256x256/apps/fusion180.png
+update-desktop-database ~/.local/share/applications 2>/dev/null
+
+# On KDE Plasma, if the entries still show in the application menu, rebuild the menu cache:
+# kbuildsycoca6
 ```
 
 This removes the directory at `~/.fusion180`. 
