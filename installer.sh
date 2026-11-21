@@ -238,6 +238,11 @@ EOF
 ok "URI handlers registered"
 
 
+info "Registering launcher (application menu)"
+
+install_launcher_entry
+
+
 # ===========================
 # Folders fixes
 # ===========================

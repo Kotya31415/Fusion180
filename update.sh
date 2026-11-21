@@ -100,6 +100,10 @@ main() {
         warn "deps.sh is not in this version of the repository; GE-Proton update skipped"
     fi
 
+    if declare -F install_launcher_entry >/dev/null 2>&1; then
+        install_launcher_entry
+    fi
+
     echo
     ok "Update finished. Restart Fusion 360 with:  ~/launch-fusion.sh"
 }

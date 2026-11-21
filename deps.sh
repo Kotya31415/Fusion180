@@ -503,7 +503,34 @@ graphics_advice() {
 }
 
 
-# --- Report ---
+# --- Launcher (application menu) ---
+install_launcher_entry() {
+    local data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+    local appdir="$data_home/applications"
+    local src_dir icon_name="applications-engineering"
+    src_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+    mkdir -p "$appdir" || return 0
+    if [ -f "$src_dir/fusion180.png" ]; then
+        mkdir -p "$data_home/icons/hicolor/256x256/apps"
+        if cp "$src_dir/fusion180.png" "$data_home/icons/hicolor/256x256/apps/fusion180.png" 2>/dev/null; then
+            icon_name="fusion180"
+        fi
+    fi
+    cat > "$appdir/fusion180.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=Fusion 360
+Comment=Autodesk Fusion 360 (GE-Proton)
+Exec=$HOME/launch-fusion.sh
+Icon=$icon_name
+Terminal=false
+Categories=Graphics;3DGraphics;Engineering;
+EOF
+    if command -v update-desktop-database >/dev/null 2>&1; then
+        update-desktop-database "$appdir" >/dev/null 2>&1 || true
+    fi
+    ok "Launcher registered in the application menu (Fusion 360)"
+}
 
 deps_report() {
     local cur
