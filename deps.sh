@@ -520,11 +520,10 @@ install_launcher_entry() {
 [Desktop Entry]
 Type=Application
 Name=Fusion 360
-Comment=Autodesk Fusion 360 (GE-Proton)
+Comment=Autodesk Fusion 360
 Exec=$HOME/launch-fusion.sh
 Icon=$icon_name
 Terminal=false
-StartupWMClass=fusion360.exe
 Categories=Graphics;3DGraphics;Engineering;
 EOF
     if command -v update-desktop-database >/dev/null 2>&1; then
