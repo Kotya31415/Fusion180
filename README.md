@@ -25,7 +25,7 @@ Fusion180 is an unofficial, community-driven guide and script set for running **
 | Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian |
 | Desktop           | KDE Plasma 6 |
 | Display server    | Wayland |
-| Compatibility tool | GE-Proton 11-1 ~ 11-12 |
+| Compatibility tool | GE-Proton 11-1 ~ 11-14 |
 
 ### Hardware Tested On
 
