@@ -22,7 +22,7 @@ Fusion180 is an unofficial, community-driven guide and script set for running **
 
 | Component        | Requirement |
 |-------------------|---------------------------------------|
-| Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian |
+| Distro            | Arch(CachyOS, EndeavourOS), Fedora, Debian, Ubuntu |
 | Desktop           | KDE Plasma 6 |
 | Display server    | Wayland |
 | Compatibility tool | GE-Proton 11-1 ~ 11-14 |
@@ -77,6 +77,7 @@ In my environment, OpenGL works more reliably. (In GE-Proton 11-11)\
 ---
 
 ## Update Fusion180
+This update applies only to the Fusion 180 programs; it does not update Fusion 360 itself. You can update Fusion 360 in the same way as you would on Windows.
 
 ```bash
 cd Fusion180
