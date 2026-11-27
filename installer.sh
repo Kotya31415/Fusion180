@@ -206,6 +206,9 @@ else
 fi
 
 if [ -d "$PREFIX/pfx/drive_c" ]; then
+    env \
+    STEAM_COMPAT_DATA_PATH="$PREFIX" \
+    STEAM_COMPAT_CLIENT_INSTALL_PATH="$PREFIX" \
     "$PROTON" run reg add 'HKCU\Software\Wine\AppDefaults\msedgewebview2.exe' /v Version /t REG_SZ /d win8 /f >/dev/null 2>&1 \
         || warn "Could not set the WebView2 Windows version (continuing)"
 fi
