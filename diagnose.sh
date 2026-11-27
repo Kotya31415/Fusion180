@@ -157,7 +157,6 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
     echo
 
     echo "## Notes"
-    echo "Steam is not used by this version of Fusion180."
     echo "GE-Proton is downloaded by deps.sh / installer.sh from GitHub into the Proton home above."
 } > "$OUT"
 
