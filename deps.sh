@@ -610,7 +610,7 @@ Comment=Autodesk Fusion 360
 Exec=$HOME/launch-fusion.sh
 Icon=$icon_name
 Terminal=false
-Categories=Graphics;3DGraphics;Engineering;
+Categories=Graphics;Development;
 EOF
     if command -v update-desktop-database >/dev/null 2>&1; then
         update-desktop-database "$appdir" >/dev/null 2>&1 || true
