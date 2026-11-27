@@ -15,7 +15,7 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
     echo
 
     echo "## System"
-    uname -a
+    uname -s -r -v -m -o
     [ -r /etc/os-release ] && grep -E '^(NAME|VERSION)=' /etc/os-release
     echo "DISPLAY=${DISPLAY:-unset}"
     echo "XDG_SESSION_TYPE=${XDG_SESSION_TYPE:-unset}"
@@ -159,5 +159,6 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
     echo "## Notes"
     echo "GE-Proton is downloaded by deps.sh / installer.sh from GitHub into the Proton home above."
 } > "$OUT"
+sed -i "s|$HOME|~|g" "$OUT"
 
 echo "Doctor report written: $OUT"
