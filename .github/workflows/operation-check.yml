@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install ShellCheck
         run: |
           sudo apt-get update
@@ -51,7 +51,7 @@ jobs:
           useradd -m testuser
           echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Test dependency installation (deps.sh)
         run: |
