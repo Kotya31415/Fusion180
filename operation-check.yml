@@ -1,0 +1,72 @@
+name: Operation-check CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  # 1. Shellscrip & Python
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - name: Run ShellCheck
+        # SC2034: deps.sh is sourced by installer.sh, so some variables look
+        #         "unused" when deps.sh is checked on its own.
+        # SC1091: the sourced file is resolved at runtime.
+        run: shellcheck -S warning --exclude=SC2034,SC1091 *.sh
+      - name: Check Python syntax
+        run: python3 -m py_compile fusion-window-fix.py
+
+  # 2 Distro check
+  distro-test:
+    needs: lint
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Ubuntu 24.04
+            image: ubuntu:24.04
+            prep: apt-get update && apt-get install -y sudo curl ca-certificates git python3
+          - name: Debian 12
+            image: debian:12
+            prep: apt-get update && apt-get install -y sudo curl ca-certificates git python3
+          - name: Fedora Latest
+            image: fedora:latest
+            prep: dnf install -y sudo curl ca-certificates git
+          - name: Arch Linux
+            image: archlinux:latest
+            prep: pacman -Syu --noconfirm sudo curl ca-certificates git
+    container:
+      image: ${{ matrix.image }}
+    steps:
+      - name: Setup container environment
+        run: |
+          ${{ matrix.prep }}
+          useradd -m testuser
+          echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - uses: actions/checkout@v4
+
+      - name: Test dependency installation (deps.sh)
+        run: |
+          chmod +x *.sh
+          # --yes is required in CI: there is no tty, so every [y/N] prompt
+          # would be read as "no" and ensure_python_xlib would fail on a
+          # fresh container.
+          su - testuser -c "cd $PWD && ./deps.sh --yes"
+
+      - name: Run diagnostics (diagnose.sh)
+        run: |
+          su - testuser -c "cd $PWD && ./diagnose.sh /home/testuser/doctor.txt"
+          grep -q "^## System" /home/testuser/doctor.txt
+          grep -q "^## WebView2" /home/testuser/doctor.txt
+          grep -q "^## GE-Proton" /home/testuser/doctor.txt
