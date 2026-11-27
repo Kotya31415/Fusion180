@@ -38,10 +38,10 @@ jobs:
             prep: apt-get update && apt-get install -y sudo curl ca-certificates git python3
           - name: Fedora Latest
             image: fedora:latest
-            prep: dnf install -y sudo curl ca-certificates git
+            prep: dnf install -y sudo curl ca-certificates git util-linux python3
           - name: Arch Linux
             image: archlinux:latest
-            prep: pacman -Syu --noconfirm sudo curl ca-certificates git
+            prep: pacman -Syu --noconfirm sudo curl ca-certificates git python
     container:
       image: ${{ matrix.image }}
     steps:
