@@ -138,7 +138,6 @@ ok "Prefix created"
 
 info "Launching Fusion360 installer"
 
-
 env \
 PROTON_USE_WINED3D=0 \
 DXVK_ASYNC=1 \
@@ -149,9 +148,67 @@ STEAM_COMPAT_DATA_PATH="$PREFIX" \
 STEAM_COMPAT_CLIENT_INSTALL_PATH="$PREFIX" \
 "$PROTON" run "$INSTALLER"
 
-
-
 ok "Fusion360 installation finished"
+
+
+# ===========================
+# WebView2 runtime
+# ===========================
+
+info "Checking the WebView2 runtime (needed by the sign-in window)"
+
+wv2_present()
+{
+    [ -n "$(find "$PREFIX/pfx" -iname "msedgewebview2.exe" -print -quit 2>/dev/null)" ]
+}
+
+if wv2_present; then
+    ok "WebView2 runtime found in the prefix"
+else
+    warn "WebView2 runtime not found in the prefix; the sign-in window cannot work without it"
+
+    WV2_EXE="$HOME/Downloads/MicrosoftEdgeWebView2RuntimeInstallerX64.exe"
+
+    if [ ! -f "$WV2_EXE" ]; then
+        info "Downloading the WebView2 standalone installer from Microsoft (about 300 MB)"
+        if command -v curl >/dev/null \
+            && curl -fL --progress-bar -o "$WV2_EXE" \
+                "https://go.microsoft.com/fwlink/p/?LinkId=2124701" \
+            && [ "$(head -c 2 "$WV2_EXE" 2>/dev/null)" = "MZ" ]; then
+            ok "WebView2 installer downloaded"
+        else
+            rm -f "$WV2_EXE"
+            WV2_EXE=""
+            warn "WebView2 download failed"
+        fi
+    fi
+
+    if [ -n "$WV2_EXE" ] && [ -f "$WV2_EXE" ]; then
+        info "Installing the WebView2 runtime to the prefix"
+
+        env \
+        PROTON_USE_WINED3D=0 \
+        DXVK_ASYNC=1 \
+        NO_AT_BRIDGE=1 \
+        WINEDLLOVERRIDES="bcp47langs=" \
+        PROTON_USE_XALIA=0 \
+        STEAM_COMPAT_DATA_PATH="$PREFIX" \
+        STEAM_COMPAT_CLIENT_INSTALL_PATH="$PREFIX" \
+        "$PROTON" run "$WV2_EXE" /silent /install \
+            || warn "The WebView2 installer returned an error"
+
+        if wv2_present; then
+            ok "WebView2 runtime installed"
+        else
+            warn "WebView2 runtime still not detected; sign-in may fail (see the README troubleshooting section)"
+        fi
+    fi
+fi
+
+if [ -d "$PREFIX/pfx/drive_c" ]; then
+    "$PROTON" run reg add 'HKCU\Software\Wine\AppDefaults\msedgewebview2.exe' /v Version /t REG_SZ /d win8 /f >/dev/null 2>&1 \
+        || warn "Could not set the WebView2 Windows version (continuing)"
+fi
 
 
 # ===========================
@@ -264,8 +321,31 @@ ok "Required folders prepared"
 
 echo
 
-echo -e "${GREEN}"
-cat <<'EOF'
+if [ -n "${DEPS_BLOCKERS:-}" ]; then
+    echo -e "${YELLOW}"
+    cat <<EOF
+
+=======================================
+
+Fusion 360 installation complete!
+
+Note: some system libraries are still missing:
+  - libgnutls.so.30   (sign-in over HTTPS may fail)
+  - libfreetype.so.6  (text may not render)
+
+Please run ./deps.sh and install them.
+
+Then start Fusion :
+
+    ~/launch-fusion.sh
+
+=======================================
+
+EOF
+    echo -e "${RESET}"
+else
+    echo -e "${GREEN}"
+    cat <<'EOF'
 
 =======================================
 
@@ -278,5 +358,5 @@ cat <<'EOF'
 =======================================
 
 EOF
-
-echo -e "${RESET}"
+    echo -e "${RESET}"
+fi

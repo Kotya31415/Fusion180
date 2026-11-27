@@ -125,9 +125,83 @@ ensure_python_xlib() {
 
 
 # --- Proton dependencies ---
+scan_dlopen_libs() {
+    DL_REQ=""; DL_WARN=""
+    command -v ldconfig >/dev/null 2>&1 || return 0
+    local cache soname
+    cache=$(ldconfig -p 2>/dev/null)
+    for soname in libfreetype.so.6 libfontconfig.so.1; do
+        echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || DL_REQ="$DL_REQ $soname(64-bit)"
+        echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || DL_REQ="$DL_REQ $soname(32-bit)"
+    done
+    for soname in libgnutls.so.30 libvulkan.so.1; do
+        echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || DL_WARN="$DL_WARN $soname(64-bit)"
+        echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || DL_WARN="$DL_WARN $soname(32-bit)"
+    done
+    return 0
+}
+
+apt_enable_i386() {
+    [ "$PKG" = apt ] || return 0
+    command -v dpkg >/dev/null 2>&1 || return 0
+    if dpkg --print-foreign-architectures 2>/dev/null | grep -Fx i386 >/dev/null 2>&1; then
+        return 0
+    fi
+    info "Enabling the i386 architecture (needed for 32-bit Wine libraries)"
+    run_priv dpkg --add-architecture i386 || { warn "Could not enable the i386 architecture"; return 1; }
+    run_priv apt-get update || warn "apt-get update failed (continuing)"
+    return 0
+}
+
+offer_dlopen_fix() {
+    local kind="$1" label=""
+    local pkgcmd=()
+    case "$kind" in
+        freetype)
+            label="FreeType/Fontconfig"
+            case "$PKG" in
+                apt)    pkgcmd=(apt-get install -y libfreetype6 libfreetype6:i386 libfontconfig1 libfontconfig1:i386) ;;
+                dnf)    pkgcmd=(dnf install -y freetype freetype.i686 fontconfig fontconfig.i686) ;;
+                pacman) pkgcmd=(pacman -S --needed --noconfirm freetype2 lib32-freetype2 fontconfig lib32-fontconfig) ;;
+            esac
+            ;;
+        signin)
+            label="sign-in (GnuTLS) / Vulkan loader"
+            case "$PKG" in
+                dnf)    pkgcmd=(dnf install -y gnutls gnutls.i686 vulkan-loader vulkan-loader.i686) ;;
+                pacman) pkgcmd=(pacman -S --needed --noconfirm gnutls lib32-gnutls vulkan-icd-loader lib32-vulkan-icd-loader) ;;
+            esac
+            ;;
+    esac
+
+    if [ ${#pkgcmd[@]} -gt 0 ]; then
+        confirm "Install the $label libraries with $PKG? (needs sudo)" || return 0
+        if [ "$PKG" = apt ]; then
+            apt_enable_i386 || true
+        fi
+        run_priv "${pkgcmd[@]}" || warn "Package installation did not work"
+    elif [ "$PKG" = apt ] && [ "$kind" = signin ]; then
+        confirm "Install the $label libraries with apt? (needs sudo)" || return 0
+        apt_enable_i386 || true
+        # Ubuntu 24.04 / Debian 12
+        if ! run_priv apt-get install -y libgnutls30t64 libgnutls30t64:i386 libvulkan1 libvulkan1:i386; then
+            info "Trying the older package name (libgnutls30)"
+            run_priv apt-get install -y libgnutls30 libgnutls30:i386 libvulkan1 libvulkan1:i386 || warn "Package installation did not work"
+        fi
+    else
+        return 0
+    fi
+
+    scan_dlopen_libs
+    case "$kind" in
+        freetype) [ -z "$DL_REQ" ]  && ok "FreeType/Fontconfig libraries installed" ;;
+        signin)   [ -z "$DL_WARN" ] && ok "Sign-in / Vulkan loader libraries installed" ;;
+    esac
+    return 0
+}
 
 check_proton_libs() {
-    local cur g f out required optional dl_req dl_warn cache soname
+    local cur g f out required optional dl_req dl_warn
     cur=$(ge_find_installed)
     [ -n "$cur" ] || return 0
     g="$cur/files"
@@ -149,24 +223,19 @@ check_proton_libs() {
 
     out=$(for f in "$g/bin/wineserver" "$g"/lib/wine/x86_64-unix/* "$g"/lib/wine/i386-unix/*; do
             [ -f "$f" ] || continue
+            case "$f" in
+                *i386-unix*) sfx=" (32-bit)" ;;
+                *)           sfx="" ;;
+            esac
             LD_LIBRARY_PATH="$g/lib:$g/lib64:$g/lib/wine/x86_64-unix:$g/lib/wine/i386-unix" ldd "$f" 2>/dev/null \
-                | awk -v f="$(basename "$f")" '/not found/{print $1 "|" f}'
+                | awk -v f="$(basename "$f")" -v sfx="$sfx" '/not found/{print $1 sfx "|" f}'
           done | sort -u)
 
-    dl_req=""; dl_warn=""
-    if command -v ldconfig >/dev/null 2>&1; then
-        cache=$(ldconfig -p 2>/dev/null)
-        for soname in libfreetype.so.6 libfontconfig.so.1; do
-            echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || dl_req="$dl_req $soname(64-bit)"
-            echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || dl_req="$dl_req $soname(32-bit)"
-        done
-        for soname in libgnutls.so.30 libvulkan.so.1; do
-            echo "$cache" | grep -F "$soname " | grep "x86-64" >/dev/null 2>&1 || dl_warn="$dl_warn $soname(64-bit)"
-            echo "$cache" | grep -F "$soname " | grep -v "x86-64" >/dev/null 2>&1 || dl_warn="$dl_warn $soname(32-bit)"
-        done
-    fi
+    scan_dlopen_libs
+    dl_req="$DL_REQ"; dl_warn="$DL_WARN"
 
     if [ -z "$out" ] && [ -z "$dl_req" ] && [ -z "$dl_warn" ]; then
+        DEPS_BLOCKERS=""
         ok "Proton host libraries: nothing missing"
         return 0
     fi
@@ -174,10 +243,11 @@ check_proton_libs() {
     required=$(echo "$out" | grep -Ev '^(libav|libsw|libopenxr|libpcap|libpiper|libxkbregistry)' || true)
     optional=$(echo "$out" | grep -E  '^(libav|libsw|libopenxr|libpcap|libpiper|libxkbregistry)' || true)
 
+    detect_distro
+
     if [ -n "$required" ]; then
         warn "Libraries Proton needs are missing:"
         echo "$required" | awk -F'|' '!seen[$1]++ {print "      " $1 "  (for example needed by " $2 ")"}'
-        detect_distro
         case "$PKG" in
             dnf)    echo "      Find the package:  dnf provides '*/<library name>'" ;;
             apt)    echo "      Find the package:  apt-file search <library name>" ;;
@@ -187,22 +257,39 @@ check_proton_libs() {
     if [ -n "$dl_req" ]; then
         warn "Runtime-loaded (dlopen) libraries are missing:$dl_req"
         echo "      Without FreeType/Fontconfig, Wine renders no text in the installer."
-        detect_distro
         case "$PKG" in
             apt)    echo "      Fix:  sudo apt install -y libfreetype6 libfreetype6:i386 libfontconfig1 libfontconfig1:i386" ;;
             dnf)    echo "      Fix:  sudo dnf install -y freetype freetype.i686 fontconfig fontconfig.i686" ;;
             pacman) echo "      Fix:  sudo pacman -S freetype2 lib32-freetype2 fontconfig lib32-fontconfig" ;;
         esac
+        offer_dlopen_fix freetype
+        dl_req="$DL_REQ"
     fi
-    if [ -z "$required" ] && [ -z "$dl_req" ]; then
+    if [ -n "$dl_warn" ]; then
+        warn "Runtime-loaded libraries missing (sign-in HTTPS / Vulkan loader may fail):$dl_warn"
+        echo "      Without GnuTLS, the sign-in window cannot reach Autodesk's servers; without the Vulkan loader, DXVK cannot start."
+        case "$PKG" in
+            apt)    echo "      Fix:  sudo apt install -y libgnutls30t64 libgnutls30t64:i386 libvulkan1 libvulkan1:i386"
+                    echo "      (Ubuntu 22.04 and older: use libgnutls30 instead of libgnutls30t64)" ;;
+            dnf)    echo "      Fix:  sudo dnf install -y gnutls gnutls.i686 vulkan-loader vulkan-loader.i686" ;;
+            pacman) echo "      Fix:  sudo pacman -S gnutls lib32-gnutls vulkan-icd-loader lib32-vulkan-icd-loader" ;;
+        esac
+        offer_dlopen_fix signin
+        dl_warn="$DL_WARN"
+    fi
+    if [ -z "$required" ] && [ -z "$dl_req" ] && [ -z "$dl_warn" ]; then
         ok "Proton host libraries: nothing essential is missing"
     fi
     if [ -n "$optional" ]; then
         info "Optional features unavailable (media decoding, VR, packet capture, TTS, Wayland driver): $(echo "$optional" | cut -d'|' -f1 | tr '\n' ' ')"
     fi
-    if [ -n "$dl_warn" ]; then
-        info "Runtime-loaded libraries missing (sign-in HTTPS / Vulkan loader may fail):$dl_warn"
+
+    # Summary for installer.sh: anything still missing after the offers.
+    DEPS_BLOCKERS=""
+    if [ -n "$required" ]; then
+        DEPS_BLOCKERS="$DEPS_BLOCKERS $(echo "$required" | cut -d'|' -f1 | sort -u | tr '\n' ' ')"
     fi
+    DEPS_BLOCKERS="$DEPS_BLOCKERS$dl_req$dl_warn"
 }
 
 
@@ -263,7 +350,7 @@ ge_install_tag() {
         rm -rf "$work"; fail "Checksum file could not be downloaded; refusing to install"
     fi
     if ! (cd "$work" && sha512sum -c --status "$asset.sha512sum"); then
-        rm -rf "$work"; fail "Checksum mismatch; the download is corrupt or has been altered"
+        rm -rf "$work"; fail "Checksum mismatch; the download may be damaged"
     fi
     ok "Checksum verified"
 
@@ -305,7 +392,7 @@ _ensure_ge_proton() {
         info "Checking for a newer GE-Proton (installed: $(basename "$current"))"
     fi
 
-    tag=$(ge_resolve_tag) || fail "Could not determine the latest GE-Proton version (network problem?)"
+    tag=$(ge_resolve_tag) || fail "Could not determine the latest GE-Proton version"
 
     if ge_have_tag "$tag"; then
         ok "GE-Proton is up to date ($tag)"
@@ -372,7 +459,6 @@ prune_ge_protons() {
 
 
 # --- GPU / Vulkan ---
-
 GPU_NVIDIA=0; GPU_AMD=0; GPU_INTEL=0
 GPU_NVIDIA_VULKAN_OK=0; GPU_AMD_VULKAN_OK=0
 
@@ -524,7 +610,7 @@ Comment=Autodesk Fusion 360
 Exec=$HOME/launch-fusion.sh
 Icon=$icon_name
 Terminal=false
-Categories=Graphics;Graphics;Development;
+Categories=Graphics;3DGraphics;Engineering;
 EOF
     if command -v update-desktop-database >/dev/null 2>&1; then
         update-desktop-database "$appdir" >/dev/null 2>&1 || true
@@ -538,7 +624,7 @@ deps_report() {
     cur=$(ge_find_installed)
     if [ -n "$cur" ]; then
         ok "GE-Proton (newest installed): $(basename "$cur")"
-        check_proton_libs
+        FUSION180_NO_INSTALL=1 check_proton_libs
         info "Installed GE-Proton versions: $(find "$PROTON_HOME" -mindepth 1 -maxdepth 1 -type d -name 'GE-Proton*' -printf '%f ' 2>/dev/null)"
         info "Download location for new versions: $PROTON_HOME"
     else

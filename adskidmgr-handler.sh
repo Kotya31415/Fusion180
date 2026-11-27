@@ -1,5 +1,5 @@
 #!/bin/bash
-# Autodesk Identity Manager (adskidmgr://) handler for Fusion180
+# Autodesk Identity Manager handler for Fusion180
 
 PREFIX="$HOME/.fusion180"
 
@@ -27,6 +27,16 @@ IDM=$(find "$PREFIX/pfx" -name AdskIdentityManager.exe -printf '%T@ %p\n' 2>/dev
 
 if [ -z "$IDM" ]; then
     exit 1
+fi
+
+# WebView2 workarounds
+if [ -z "${FUSION180_NO_WEBVIEW2_FIX:-}" ]; then
+    PROTON_NO_SECCOMP="${PROTON_NO_SECCOMP:-1}"
+    case " ${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:-} " in
+        *" --no-sandbox "*) ;;
+        *) WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS="${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:+${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS} }--no-sandbox" ;;
+    esac
+    export PROTON_NO_SECCOMP WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS
 fi
 
 env \

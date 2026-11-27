@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION="0.3.0"
+VERSION="0.3.2"
 PREFIX="$HOME/.fusion180"
 CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/fusion180"
 PROTON_HOME="${FUSION180_PROTON_DIR:-$(cat "$CONF_DIR/proton_dir" 2>/dev/null)}"
@@ -22,6 +22,29 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
     echo "WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-unset}"
     echo
 
+    echo "## Display"
+    echo "XDG_CURRENT_DESKTOP=${XDG_CURRENT_DESKTOP:-unset}"
+    echo "Scale env: GDK_SCALE=${GDK_SCALE:-unset} GDK_DPI_SCALING=${GDK_DPI_SCALING:-unset} QT_SCALE_FACTOR=${QT_SCALE_FACTOR:-unset}"
+    if [ -n "${DISPLAY:-}" ] && command -v xrandr >/dev/null 2>&1; then
+        echo "Monitors (xrandr: connected outputs and current modes):"
+        xrandr --query 2>/dev/null | grep -E ' connected|\*' | head -20 | sed 's/^/  /'
+    else
+        echo "Monitors: could not check (no DISPLAY or xrandr not installed)"
+    fi
+    if [ -n "${DISPLAY:-}" ] && command -v xrdb >/dev/null 2>&1; then
+        xft=$(xrdb -query 2>/dev/null | awk -F'\t' '$1 == "Xft.dpi:" {print $2}')
+        echo "Xft.dpi: ${xft:-not set}"
+    fi
+    if [ -f "$PREFIX/pfx/user.reg" ]; then
+        lp=$(grep -m1 '"LogPixels"=dword:' "$PREFIX/pfx/user.reg" 2>/dev/null | sed 's/.*dword://')
+        if [ -n "$lp" ]; then
+            echo "Wine LogPixels: $((16#$lp)) dpi (as set in the prefix)"
+        else
+            echo "Wine LogPixels: not set (Wine default 96 dpi)"
+        fi
+    fi
+    echo
+
     echo "## Prefix"
     if [ -d "$PREFIX" ]; then
         echo "Prefix: $PREFIX (exists)"
@@ -30,6 +53,37 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
         echo "dxvk.conf: $([ -f "$PREFIX/dxvk.conf" ] && echo present || echo 'not present')"
     else
         echo "Prefix: $PREFIX (not found — installer.sh has not been run, or it was removed)"
+    fi
+    echo
+
+    echo "## WebView2 (sign-in window)"
+    if [ -d "$PREFIX/pfx" ]; then
+        wv2_exe=$(find "$PREFIX/pfx" -iname "msedgewebview2.exe" -print -quit 2>/dev/null)
+        echo "msedgewebview2.exe: ${wv2_exe:-NOT FOUND (sign-in cannot work — re-run installer.sh or install the WebView2 runtime)}"
+        idm_exe=$(find "$PREFIX/pfx" -name "AdskIdentityManager.exe" -print -quit 2>/dev/null)
+        echo "AdskIdentityManager.exe: ${idm_exe:-not found}"
+        if [ -f "$PREFIX/pfx/system.reg" ]; then
+            if grep -F 'F3017226-FE2A-4295-8BDF-00C3A9A7E4C5' "$PREFIX/pfx/system.reg" >/dev/null 2>&1; then
+                echo "WebView2 runtime registration (EdgeUpdate): present"
+            else
+                echo "WebView2 runtime registration (EdgeUpdate): NOT FOUND"
+            fi
+        else
+            echo "WebView2 runtime registration (EdgeUpdate): could not check (no system.reg)"
+        fi
+        if [ -f "$PREFIX/pfx/user.reg" ]; then
+            wv2_ver=$(grep -A2 -F 'AppDefaults\\msedgewebview2.exe' "$PREFIX/pfx/user.reg" 2>/dev/null | grep -F '"Version"' | head -n1)
+            echo "msedgewebview2.exe AppDefaults: ${wv2_ver:-not set (the launcher sets Version=win8 at launch)}"
+        fi
+    else
+        echo "Skipped (no prefix)"
+    fi
+    if [ -f "$HOME/launch-fusion.sh" ]; then
+        if grep -F 'PROTON_NO_SECCOMP' "$HOME/launch-fusion.sh" >/dev/null 2>&1; then
+            echo "Launcher WebView2 workarounds: present"
+        else
+            echo "Launcher WebView2 workarounds: NOT present (old launcher — re-run installer.sh to update it)"
+        fi
     fi
     echo
 
@@ -55,7 +109,8 @@ OUT="${1:-$HOME/fusion180-doctor-$(date +%Y%m%d-%H%M%S).txt}"
     for f in "$HOME/launch-fusion.sh" "$HOME/fusion-window-fix.py" \
              "$HOME/.local/share/applications/adskidmgr-handler.sh" \
              "$HOME/.local/share/applications/adskidmgr.desktop" \
-             "$HOME/.local/share/applications/adsk-fusion360.desktop"; do
+             "$HOME/.local/share/applications/adsk-fusion360.desktop" \
+             "$HOME/.local/share/applications/fusion180.desktop"; do
         echo "$f: $([ -f "$f" ] && echo present || echo MISSING)"
     done
     if [ -f "$HOME/.config/mimeapps.list" ]; then

@@ -22,7 +22,7 @@ if [ -z "$PROTON_DIR" ]; then
 fi
 if [ ! -x "$PROTON_DIR/proton" ]; then
     echo "GE-Proton not found (looked in: ${PROTON_HOME:-<not set>})." >&2
-    echo "Run ./deps.sh in the Fusion180 folder first." >&2
+    echo "Run ./deps.sh in the Fusion180 folder." >&2
     exit 1
 fi
 PROTON="$PROTON_DIR/proton"
@@ -41,6 +41,15 @@ export DXVK_ASYNC=1
 export NO_AT_BRIDGE=1
 export WINEDLLOVERRIDES="bcp47langs="
 export PROTON_USE_XALIA=0
+
+# WebView2 workaround
+if [ -z "${FUSION180_NO_WEBVIEW2_FIX:-}" ]; then
+    export PROTON_NO_SECCOMP="${PROTON_NO_SECCOMP:-1}"
+    case " ${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:-} " in
+        *" --no-sandbox "*) ;;
+        *) export WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS="${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS:+${WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS} }--no-sandbox" ;;
+    esac
+fi
 
 export STEAM_COMPAT_DATA_PATH="$PREFIX"
 export STEAM_COMPAT_CLIENT_INSTALL_PATH="$PREFIX"
@@ -78,6 +87,10 @@ fi
 if [ -d "$PREFIX/pfx/drive_c" ]; then
     QL="$PREFIX/pfx/drive_c/users/steamuser/AppData/Roaming/Microsoft/Internet Explorer/Quick Launch"
     mkdir -p "$QL/User Pinned/ImplicitAppShortcuts" "$QL/User Pinned/TaskBar"
+fi
+
+if [ -z "${FUSION180_NO_WEBVIEW2_FIX:-}" ] && [ -d "$PREFIX/pfx/drive_c" ]; then
+    "$PROTON" run reg add 'HKCU\Software\Wine\AppDefaults\msedgewebview2.exe' /v Version /t REG_SZ /d win8 /f >/dev/null 2>&1 || true
 fi
 
 FUSION=$(find "$PREFIX/pfx" -name Fusion360.exe -printf '%T@ %p\n' 2>/dev/null \

@@ -16,9 +16,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y shellcheck
       - name: Run ShellCheck
-        # SC2034: deps.sh is sourced by installer.sh, so some variables look
-        #         "unused" when deps.sh is checked on its own.
-        # SC1091: the sourced file is resolved at runtime.
         run: shellcheck -S warning --exclude=SC2034,SC1091 *.sh
       - name: Check Python syntax
         run: python3 -m py_compile fusion-window-fix.py
